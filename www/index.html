@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processor - Rust WebAssembly</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Image Processor</h1>
+            <p class="subtitle">Client-side image processing powered by Rust & WebAssembly</p>
+        </header>
+
+        <main>
+            <!-- File Upload Section -->
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <h2>Choose an image</h2>
+                    <p>or drag and drop it here</p>
+                    <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
+                    <button class="btn btn-primary" id="selectFileBtn">Select File</button>
+                </div>
+            </section>
+
+            <!-- Processing Controls -->
+            <section class="controls-section" id="controlsSection" style="display: none;">
+                <h2>Image Processing Operations</h2>
+
+                <div class="controls-grid">
+                    <!-- Basic Filters -->
+                    <div class="control-group">
+                        <h3>Filters</h3>
+                        <button class="btn btn-filter" data-filter="grayscale">Grayscale</button>
+                        <button class="btn btn-filter" data-filter="invert">Invert Colors</button>
+                        <button class="btn btn-filter" data-filter="sepia">Sepia Tone</button>
+                    </div>
+
+                    <!-- Adjustments -->
+                    <div class="control-group">
+                        <h3>Adjustments</h3>
+                        <div class="slider-control">
+                            <label for="blurSlider">Blur: <span id="blurValue">2.0</span></label>
+                            <input type="range" id="blurSlider" min="0" max="10" step="0.5" value="2.0">
+                            <button class="btn btn-filter btn-small" data-filter="blur">Apply Blur</button>
+                        </div>
+                        <div class="slider-control">
+                            <label for="brightnessSlider">Brightness: <span id="brightnessValue">0</span></label>
+                            <input type="range" id="brightnessSlider" min="-100" max="100" step="5" value="0">
+                            <button class="btn btn-filter btn-small" data-filter="brighten">Apply Brightness</button>
+                        </div>
+                        <div class="slider-control">
+                            <label for="contrastSlider">Contrast: <span id="contrastValue">0</span></label>
+                            <input type="range" id="contrastSlider" min="-100" max="100" step="5" value="0">
+                            <button class="btn btn-filter btn-small" data-filter="adjust_contrast">Apply Contrast</button>
+                        </div>
+                    </div>
+
+                    <!-- Transformations -->
+                    <div class="control-group">
+                        <h3>Transformations</h3>
+                        <button class="btn btn-filter" data-filter="rotate90">Rotate 90°</button>
+                        <button class="btn btn-filter" data-filter="rotate180">Rotate 180°</button>
+                        <button class="btn btn-filter" data-filter="rotate270">Rotate 270°</button>
+                        <button class="btn btn-filter" data-filter="fliph">Flip Horizontal</button>
+                        <button class="btn btn-filter" data-filter="flipv">Flip Vertical</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="resetBtn">Reset to Original</button>
+                    <button class="btn btn-success" id="downloadBtn">Download Processed Image</button>
+                </div>
+            </section>
+
+            <!-- Image Display Section -->
+            <section class="images-section" id="imagesSection" style="display: none;">
+                <div class="image-container">
+                    <h3>Original Image</h3>
+                    <div class="image-wrapper">
+                        <canvas id="originalCanvas"></canvas>
+                        <div class="image-info" id="originalInfo"></div>
+                    </div>
+                </div>
+
+                <div class="arrow">→</div>
+
+                <div class="image-container">
+                    <h3>Processed Image</h3>
+                    <div class="image-wrapper">
+                        <canvas id="processedCanvas"></canvas>
+                        <div class="image-info" id="processedInfo"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Spinner -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p>Processing image...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+        </main>
+
+        <footer>
+            <p>Built with <a href="https://www.rust-lang.org/" target="_blank">Rust</a> and <a href="https://webassembly.org/" target="_blank">WebAssembly</a></p>
+            <p class="tech-info">
+                Supported formats: PNG, JPEG, WebP • All processing happens in your browser
+            </p>
+        </footer>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+
+# WASM build output
+/pkg/
+wasm-pack.log
+
+# Cargo lock file (uncomment if this is a library)
+# Cargo.lock
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node modules (if using npm for local server)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Debug files
+*.log
+*.out
+
+# OS files
+Thumbs.db
+.DS_Store
