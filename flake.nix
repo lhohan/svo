@@ -12,6 +12,8 @@
     devShell = pkgs.mkShell {
       buildInputs = with pkgs; [
         rustup
+        wasm-pack
+        simple-http-server
       ];
     };
   });
