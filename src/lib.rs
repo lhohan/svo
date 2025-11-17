@@ -297,6 +297,130 @@ pub fn combine_top_bottom(user_img_data: &[u8], overlay_img_data: &[u8]) -> Resu
     image_to_bytes(&combined_img, ImageFormat::Png)
 }
 
+/// Combine two images with a left/right split (vertical line)
+/// Left half from the user image, right half from the overlay image
+///
+/// # Arguments
+/// * `user_img_data` - Raw image bytes for the main image (PNG, JPEG, or WebP)
+/// * `overlay_img_data` - Raw image bytes for the overlay image (PNG, JPEG, or WebP)
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
+#[wasm_bindgen]
+pub fn combine_left_right(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+    log("Processing: Combine images (left/right split)");
+
+    let user_img = bytes_to_image(user_img_data)?;
+    let mut overlay_img = bytes_to_image(overlay_img_data)?;
+
+    let (width, height) = user_img.dimensions();
+    overlay_img = overlay_img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+
+    let user_rgba = user_img.to_rgba8();
+    let overlay_rgba = overlay_img.to_rgba8();
+
+    let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+    let mid_width = width / 2;
+
+    for y in 0..height {
+        for x in 0..width {
+            let pixel = if x < mid_width {
+                user_rgba.get_pixel(x, y)
+            } else {
+                overlay_rgba.get_pixel(x, y)
+            };
+            output.put_pixel(x, y, *pixel);
+        }
+    }
+
+    let combined_img = DynamicImage::ImageRgba8(output);
+    image_to_bytes(&combined_img, ImageFormat::Png)
+}
+
+/// Combine two images with a diagonal split (top-left to bottom-right)
+/// Top-left triangle from the user image, bottom-right triangle from the overlay image
+///
+/// # Arguments
+/// * `user_img_data` - Raw image bytes for the main image (PNG, JPEG, or WebP)
+/// * `overlay_img_data` - Raw image bytes for the overlay image (PNG, JPEG, or WebP)
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
+#[wasm_bindgen]
+pub fn combine_diagonal_tl_br(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+    log("Processing: Combine images (diagonal top-left to bottom-right)");
+
+    let user_img = bytes_to_image(user_img_data)?;
+    let mut overlay_img = bytes_to_image(overlay_img_data)?;
+
+    let (width, height) = user_img.dimensions();
+    overlay_img = overlay_img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+
+    let user_rgba = user_img.to_rgba8();
+    let overlay_rgba = overlay_img.to_rgba8();
+
+    let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+    for y in 0..height {
+        for x in 0..width {
+            // Diagonal line from (0, 0) to (width, height)
+            // Equation: y * width = x * height
+            // Point is above line (user) if: y * width < x * height
+            let pixel = if (y as u32 * width) < (x as u32 * height) {
+                user_rgba.get_pixel(x, y)
+            } else {
+                overlay_rgba.get_pixel(x, y)
+            };
+            output.put_pixel(x, y, *pixel);
+        }
+    }
+
+    let combined_img = DynamicImage::ImageRgba8(output);
+    image_to_bytes(&combined_img, ImageFormat::Png)
+}
+
+/// Combine two images with a diagonal split (top-right to bottom-left)
+/// Top-right triangle from the user image, bottom-left triangle from the overlay image
+///
+/// # Arguments
+/// * `user_img_data` - Raw image bytes for the main image (PNG, JPEG, or WebP)
+/// * `overlay_img_data` - Raw image bytes for the overlay image (PNG, JPEG, or WebP)
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
+#[wasm_bindgen]
+pub fn combine_diagonal_tr_bl(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+    log("Processing: Combine images (diagonal top-right to bottom-left)");
+
+    let user_img = bytes_to_image(user_img_data)?;
+    let mut overlay_img = bytes_to_image(overlay_img_data)?;
+
+    let (width, height) = user_img.dimensions();
+    overlay_img = overlay_img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+
+    let user_rgba = user_img.to_rgba8();
+    let overlay_rgba = overlay_img.to_rgba8();
+
+    let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+    for y in 0..height {
+        for x in 0..width {
+            // Diagonal line from (width, 0) to (0, height)
+            // Equation: y * width = (width - x) * height
+            // Point is above line (user) if: y * width < (width - x) * height
+            let pixel = if (y as u32 * width) < ((width - x as u32) * height) {
+                user_rgba.get_pixel(x, y)
+            } else {
+                overlay_rgba.get_pixel(x, y)
+            };
+            output.put_pixel(x, y, *pixel);
+        }
+    }
+
+    let combined_img = DynamicImage::ImageRgba8(output);
+    image_to_bytes(&combined_img, ImageFormat::Png)
+}
+
 /// Get image dimensions
 ///
 /// # Arguments

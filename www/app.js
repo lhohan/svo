@@ -221,6 +221,24 @@ async function applyFilter(filterName, ...args) {
                 }
                 result = wasmModule.combine_top_bottom(currentImageData, overlayImageData);
                 break;
+            case 'combine_left_right':
+                if (!overlayImageData) {
+                    throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
+                }
+                result = wasmModule.combine_left_right(currentImageData, overlayImageData);
+                break;
+            case 'combine_diagonal_tl_br':
+                if (!overlayImageData) {
+                    throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
+                }
+                result = wasmModule.combine_diagonal_tl_br(currentImageData, overlayImageData);
+                break;
+            case 'combine_diagonal_tr_bl':
+                if (!overlayImageData) {
+                    throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
+                }
+                result = wasmModule.combine_diagonal_tr_bl(currentImageData, overlayImageData);
+                break;
             default:
                 throw new Error('Unknown filter: ' + filterName);
         }
