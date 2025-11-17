@@ -2,6 +2,7 @@
 
 A modern, high-performance client-side image processing web application built with Rust and WebAssembly. All image processing happens entirely in your browser - no server uploads required!
 
+This project was developed as a tryout of Claude Code Web. The result you see here is the result of a single well specified prompt.
 ## Features
 
 ### Image Filters
