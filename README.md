@@ -95,14 +95,7 @@ image-processor-wasm/
 
 ## Setup Instructions
 
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd image-processor-wasm
-```
-
-### 2. Build the WebAssembly Module
+### 1. Build the WebAssembly Module
 
 This compiles the Rust code to WebAssembly:
 
@@ -121,7 +114,7 @@ This command will:
 - `--release` - Production build with optimizations (default)
 - `--dev` - Development build with debug symbols
 
-### 3. Serve the Application
+### 2. Serve the Application
 
 You need a local web server because browsers restrict ES6 module imports from `file://` URLs.
 
