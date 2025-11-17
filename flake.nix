@@ -14,7 +14,15 @@
         rustup
         wasm-pack
         simple-http-server
+        just
       ];
+
+      shellHook = ''
+        echo "SVO Image manipulation"
+        echo ""
+        echo "$(just --list)"
+        echo ""
+      '';
     };
   });
 }
