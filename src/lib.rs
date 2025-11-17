@@ -246,6 +246,57 @@ pub fn flipv(data: &[u8]) -> Result<Vec<u8>, JsValue> {
     image_to_bytes(&flipped, ImageFormat::Png)
 }
 
+/// Combine two images with a top/bottom split
+/// Top half from the user image, bottom half from the overlay image
+///
+/// # Arguments
+/// * `user_img_data` - Raw image bytes for the main image (PNG, JPEG, or WebP)
+/// * `overlay_img_data` - Raw image bytes for the overlay image (PNG, JPEG, or WebP)
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
+#[wasm_bindgen]
+pub fn combine_top_bottom(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+    log("Processing: Combine images (top/bottom split)");
+
+    // Load both images
+    let user_img = bytes_to_image(user_img_data)?;
+    let mut overlay_img = bytes_to_image(overlay_img_data)?;
+
+    let (width, height) = user_img.dimensions();
+
+    // Resize overlay image to match user image dimensions
+    overlay_img = overlay_img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+
+    // Convert both to RGBA for pixel manipulation
+    let user_rgba = user_img.to_rgba8();
+    let overlay_rgba = overlay_img.to_rgba8();
+
+    // Create output buffer
+    let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+    let mid_height = height / 2;
+
+    // Copy top half from user image
+    for y in 0..mid_height {
+        for x in 0..width {
+            let pixel = user_rgba.get_pixel(x, y);
+            output.put_pixel(x, y, *pixel);
+        }
+    }
+
+    // Copy bottom half from overlay image
+    for y in mid_height..height {
+        for x in 0..width {
+            let pixel = overlay_rgba.get_pixel(x, y);
+            output.put_pixel(x, y, *pixel);
+        }
+    }
+
+    let combined_img = DynamicImage::ImageRgba8(output);
+    image_to_bytes(&combined_img, ImageFormat::Png)
+}
+
 /// Get image dimensions
 ///
 /// # Arguments

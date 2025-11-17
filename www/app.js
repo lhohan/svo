@@ -6,6 +6,7 @@ let wasmModule = null;
 let originalImageData = null;
 let currentImageData = null;
 let originalFileName = '';
+let overlayImageData = null;
 
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
@@ -31,6 +32,23 @@ const contrastSlider = document.getElementById('contrastSlider');
 const contrastValue = document.getElementById('contrastValue');
 
 /**
+ * Load the overlay image (lightning bolt)
+ */
+async function loadOverlayImage() {
+    try {
+        const response = await fetch('./lightning.png');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch overlay image: ${response.statusText}`);
+        }
+        const buffer = await response.arrayBuffer();
+        overlayImageData = new Uint8Array(buffer);
+        console.log('Overlay image loaded successfully');
+    } catch (error) {
+        console.warn('Warning: Could not load overlay image. Combine feature may not work: ' + error.message);
+    }
+}
+
+/**
  * Initialize the WebAssembly module
  */
 async function initWasm() {
@@ -39,6 +57,10 @@ async function initWasm() {
         await init();
         wasmModule = wasm;
         console.log('WebAssembly module loaded successfully');
+
+        // Load overlay image
+        await loadOverlayImage();
+
         showLoading(false);
     } catch (error) {
         showError('Failed to load WebAssembly module: ' + error.message);
@@ -192,6 +214,12 @@ async function applyFilter(filterName, ...args) {
                 break;
             case 'flipv':
                 result = wasmModule.flipv(currentImageData);
+                break;
+            case 'combine_top_bottom':
+                if (!overlayImageData) {
+                    throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
+                }
+                result = wasmModule.combine_top_bottom(currentImageData, overlayImageData);
                 break;
             default:
                 throw new Error('Unknown filter: ' + filterName);
