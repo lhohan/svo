@@ -30,3 +30,6 @@ yarn.lock
 # OS files
 Thumbs.db
 .DS_Store
+
+# Claude Code
+**/*.local.json
