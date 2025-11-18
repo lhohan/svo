@@ -172,6 +172,11 @@ main {
     margin-bottom: 0.5rem;
 }
 
+.slider-control .btn-primary {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
 .btn-filter:hover {
     background: #636363;
     color: #f9f9f9;
