@@ -447,11 +447,11 @@ function enterCropMode() {
     createCropOverlay();
     originalCanvas.style.cursor = 'crosshair';
 
-    // Calculate default centered square selection (80% of smaller dimension)
+    // Calculate default centered square selection (maximum size = 100% of smaller dimension)
     const canvasWidth = originalCanvas.width;
     const canvasHeight = originalCanvas.height;
     const smallerDimension = Math.min(canvasWidth, canvasHeight);
-    const defaultSize = Math.floor(smallerDimension * 0.8);
+    const defaultSize = smallerDimension;
 
     // Center the selection
     const centerX = Math.floor(canvasWidth / 2);
