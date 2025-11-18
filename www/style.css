@@ -306,6 +306,19 @@ canvas {
     font-weight: bold;
 }
 
+/* Crop Selection Overlay */
+.crop-overlay {
+    cursor: crosshair;
+    z-index: 100;
+    border-radius: 0.5rem;
+}
+
+.crop-selection {
+    border: 2px dashed var(--primary-color);
+    background: rgba(99, 102, 241, 0.1);
+    position: absolute;
+}
+
 /* Loading Overlay */
 .loading-overlay {
     display: none;

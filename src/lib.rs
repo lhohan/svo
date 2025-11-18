@@ -435,3 +435,40 @@ pub fn get_dimensions(data: &[u8]) -> Result<Vec<u32>, JsValue> {
 
     Ok(vec![width, height])
 }
+
+/// Crop an image to a square region
+///
+/// # Arguments
+/// * `data` - Raw image bytes (PNG, JPEG, or WebP)
+/// * `x` - Left edge of the crop area in pixels
+/// * `y` - Top edge of the crop area in pixels
+/// * `size` - Width and height of the square crop area in pixels
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Cropped image as PNG bytes or error
+#[wasm_bindgen]
+pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, JsValue> {
+    log(&format!("Processing: Crop square at ({}, {}) size {}", x, y, size));
+
+    let img = bytes_to_image(data)?;
+    let (width, height) = img.dimensions();
+
+    // Validate that the crop area doesn't exceed image bounds
+    if x + size > width {
+        return Err(JsValue::from_str(&format!(
+            "Crop area exceeds image width: {} + {} > {}",
+            x, size, width
+        )));
+    }
+    if y + size > height {
+        return Err(JsValue::from_str(&format!(
+            "Crop area exceeds image height: {} + {} > {}",
+            y, size, height
+        )));
+    }
+
+    // Crop the image to the specified square region
+    let cropped = img.crop_imm(x, y, size, size);
+
+    image_to_bytes(&cropped, ImageFormat::Png)
+}

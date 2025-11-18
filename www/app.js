@@ -8,6 +8,15 @@ let currentImageData = null;
 let originalFileName = '';
 let overlayImageData = null;
 
+// Crop state
+let cropMode = false;
+let cropOverlayCanvas = null;
+let cropStartX = null;
+let cropStartY = null;
+let cropCurrentX = null;
+let cropCurrentY = null;
+let cropSize = null;
+
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
@@ -30,6 +39,11 @@ const brightnessSlider = document.getElementById('brightnessSlider');
 const brightnessValue = document.getElementById('brightnessValue');
 const contrastSlider = document.getElementById('contrastSlider');
 const contrastValue = document.getElementById('contrastValue');
+
+// Crop buttons
+const cropModeBtn = document.getElementById('cropModeBtn');
+const applyCropBtn = document.getElementById('applyCropBtn');
+const cancelCropBtn = document.getElementById('cancelCropBtn');
 
 /**
  * Load the overlay image (lightning bolt)
@@ -239,6 +253,12 @@ async function applyFilter(filterName, ...args) {
                 }
                 result = wasmModule.combine_diagonal_tr_bl(currentImageData, overlayImageData);
                 break;
+            case 'crop_square':
+                const cropX = Math.floor(args[0]);
+                const cropY = Math.floor(args[1]);
+                const cropSize = Math.floor(args[2]);
+                result = wasmModule.crop_square(currentImageData, cropX, cropY, cropSize);
+                break;
             default:
                 throw new Error('Unknown filter: ' + filterName);
         }
@@ -298,6 +318,169 @@ function downloadImage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+/**
+ * Convert mouse coordinates to canvas coordinates
+ */
+function getCanvasCoordinates(mouseX, mouseY) {
+    const rect = processedCanvas.getBoundingClientRect();
+    const scaleX = processedCanvas.width / rect.width;
+    const scaleY = processedCanvas.height / rect.height;
+
+    const canvasX = (mouseX - rect.left) * scaleX;
+    const canvasY = (mouseY - rect.top) * scaleY;
+
+    return { x: Math.max(0, canvasX), y: Math.max(0, canvasY) };
+}
+
+/**
+ * Create overlay canvas for crop selection
+ */
+function createCropOverlay() {
+    // Remove existing overlay if any
+    if (cropOverlayCanvas) {
+        cropOverlayCanvas.remove();
+    }
+
+    // Create overlay canvas
+    cropOverlayCanvas = document.createElement('canvas');
+    cropOverlayCanvas.id = 'cropOverlay';
+    cropOverlayCanvas.width = processedCanvas.width;
+    cropOverlayCanvas.height = processedCanvas.height;
+    cropOverlayCanvas.className = 'crop-overlay';
+
+    // Position it absolutely over the processed canvas
+    const canvasRect = processedCanvas.getBoundingClientRect();
+    cropOverlayCanvas.style.position = 'absolute';
+    cropOverlayCanvas.style.left = canvasRect.left + 'px';
+    cropOverlayCanvas.style.top = canvasRect.top + 'px';
+    cropOverlayCanvas.style.width = processedCanvas.offsetWidth + 'px';
+    cropOverlayCanvas.style.height = processedCanvas.offsetHeight + 'px';
+
+    document.body.appendChild(cropOverlayCanvas);
+}
+
+/**
+ * Draw crop selection rectangle
+ */
+function drawCropSelection() {
+    if (!cropOverlayCanvas || cropStartX === null) return;
+
+    const ctx = cropOverlayCanvas.getContext('2d');
+    const width = cropOverlayCanvas.width;
+    const height = cropOverlayCanvas.height;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw semi-transparent overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, width, height);
+
+    // Calculate crop square
+    const deltaX = Math.abs(cropCurrentX - cropStartX);
+    const deltaY = Math.abs(cropCurrentY - cropStartY);
+    cropSize = Math.min(deltaX, deltaY);
+
+    // Calculate top-left position
+    const cropX = cropStartX < cropCurrentX ? cropStartX : cropStartX - cropSize;
+    const cropY = cropStartY < cropCurrentY ? cropStartY : cropStartY - cropSize;
+
+    // Clear the selection area
+    ctx.clearRect(cropX, cropY, cropSize, cropSize);
+
+    // Draw selection border
+    ctx.strokeStyle = '#6366f1';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.strokeRect(cropX, cropY, cropSize, cropSize);
+    ctx.setLineDash([]);
+
+    // Draw corner handles
+    const handleSize = 8;
+    ctx.fillStyle = '#6366f1';
+    const corners = [
+        [cropX, cropY],
+        [cropX + cropSize, cropY],
+        [cropX, cropY + cropSize],
+        [cropX + cropSize, cropY + cropSize]
+    ];
+    corners.forEach(([x, y]) => {
+        ctx.fillRect(x - handleSize / 2, y - handleSize / 2, handleSize, handleSize);
+    });
+}
+
+/**
+ * Enter crop mode
+ */
+function enterCropMode() {
+    cropMode = true;
+    cropModeBtn.style.display = 'none';
+    applyCropBtn.style.display = 'inline-block';
+    cancelCropBtn.style.display = 'inline-block';
+
+    createCropOverlay();
+    processedCanvas.style.cursor = 'crosshair';
+
+    // Reset crop state
+    cropStartX = null;
+    cropStartY = null;
+    cropCurrentX = null;
+    cropCurrentY = null;
+    cropSize = null;
+}
+
+/**
+ * Exit crop mode
+ */
+function exitCropMode() {
+    cropMode = false;
+    cropModeBtn.style.display = 'inline-block';
+    applyCropBtn.style.display = 'none';
+    cancelCropBtn.style.display = 'none';
+    processedCanvas.style.cursor = 'default';
+
+    if (cropOverlayCanvas) {
+        cropOverlayCanvas.remove();
+        cropOverlayCanvas = null;
+    }
+
+    cropStartX = null;
+    cropStartY = null;
+    cropCurrentX = null;
+    cropCurrentY = null;
+    cropSize = null;
+}
+
+/**
+ * Apply crop
+ */
+async function applyCrop() {
+    if (cropSize === null || cropStartX === null) {
+        showError('Please select a crop area first');
+        return;
+    }
+
+    // Calculate actual crop coordinates
+    const deltaX = Math.abs(cropCurrentX - cropStartX);
+    const deltaY = Math.abs(cropCurrentY - cropStartY);
+    const size = Math.min(deltaX, deltaY);
+
+    const x = Math.min(cropStartX, cropCurrentX);
+    const y = Math.min(cropStartY, cropCurrentY);
+
+    exitCropMode();
+
+    // Apply crop via WASM
+    await applyFilter('crop_square', x, y, size);
+}
+
+/**
+ * Cancel crop
+ */
+function cancelCrop() {
+    exitCropMode();
 }
 
 // Event Listeners
@@ -369,6 +552,44 @@ contrastSlider.addEventListener('input', (e) => {
 // Action buttons
 resetBtn.addEventListener('click', resetImage);
 downloadBtn.addEventListener('click', downloadImage);
+
+// Crop buttons
+cropModeBtn.addEventListener('click', enterCropMode);
+applyCropBtn.addEventListener('click', applyCrop);
+cancelCropBtn.addEventListener('click', cancelCrop);
+
+// Canvas mouse events for crop selection
+processedCanvas.addEventListener('mousedown', (e) => {
+    if (!cropMode) return;
+
+    const coords = getCanvasCoordinates(e.clientX, e.clientY);
+    cropStartX = coords.x;
+    cropStartY = coords.y;
+    cropCurrentX = cropStartX;
+    cropCurrentY = cropStartY;
+
+    drawCropSelection();
+});
+
+processedCanvas.addEventListener('mousemove', (e) => {
+    if (!cropMode || cropStartX === null) return;
+
+    const coords = getCanvasCoordinates(e.clientX, e.clientY);
+    cropCurrentX = coords.x;
+    cropCurrentY = coords.y;
+
+    drawCropSelection();
+});
+
+processedCanvas.addEventListener('mouseup', () => {
+    // Selection is finalized, ready for apply
+});
+
+processedCanvas.addEventListener('mouseleave', () => {
+    if (cropMode && cropStartX !== null) {
+        // Continue showing the selection
+    }
+});
 
 // Initialize WASM on page load
 initWasm();
