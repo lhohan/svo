@@ -1,117 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Processor - Rust WebAssembly</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🎨 Image Processor</h1>
-            <p class="subtitle">Client-side image processing powered by Rust & WebAssembly</p>
-        </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Image Processor - Rust WebAssembly</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>🎨 Image Processor</h1>
+                <p class="subtitle">
+                    Client-side image processing powered by Rust & WebAssembly
+                </p>
+            </header>
 
-        <main>
-            <!-- File Upload Section -->
-            <section class="upload-section">
-                <div class="upload-area" id="uploadArea">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                    <h2>Choose an image</h2>
-                    <p>or drag and drop it here</p>
-                    <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
-                    <button class="btn btn-primary" id="selectFileBtn">Select File</button>
-                </div>
-            </section>
+            <main>
+                <!-- File Upload Section -->
+                <section class="upload-section">
+                    <div class="upload-area" id="uploadArea">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="64"
+                            height="64"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            ></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <h2>Choose an image</h2>
+                        <p>or drag and drop it here</p>
+                        <input
+                            type="file"
+                            id="fileInput"
+                            accept="image/png,image/jpeg,image/jpg,image/webp"
+                            hidden
+                        />
+                        <button class="btn btn-primary" id="selectFileBtn">
+                            Select File
+                        </button>
+                    </div>
+                </section>
 
-            <!-- Processing Controls -->
-            <section class="controls-section" id="controlsSection" style="display: none;">
-                <h2>Image Processing Operations</h2>
+                <!-- Processing Controls -->
+                <section
+                    class="controls-section"
+                    id="controlsSection"
+                    style="display: none"
+                >
+                    <h2>Image Processing Operations</h2>
 
-                <div class="controls-grid">
-                    <!-- Image Tools -->
-                    <div class="control-group">
-                        <h3>Image Tools</h3>
-                        <div class="slider-control">
-                            <label>Crop</label>
-                            <button class="btn btn-primary" id="cropModeBtn">Select Square Area</button>
-                            <button class="btn btn-success btn-small" id="applyCropBtn" style="display:none;">Apply Crop</button>
-                            <button class="btn btn-secondary btn-small" id="cancelCropBtn" style="display:none;">Cancel</button>
+                    <div class="controls-grid">
+                        <!-- Image Tools -->
+                        <div class="control-group">
+                            <h3>Image Tools</h3>
+                            <div class="slider-control">
+                                <label>Crop</label>
+                                <button
+                                    class="btn btn-primary"
+                                    id="cropModeBtn"
+                                >
+                                    Select Square Area
+                                </button>
+                                <button
+                                    class="btn btn-success btn-small"
+                                    id="applyCropBtn"
+                                    style="display: none"
+                                >
+                                    Apply Crop
+                                </button>
+                                <button
+                                    class="btn btn-secondary btn-small"
+                                    id="cancelCropBtn"
+                                    style="display: none"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Filters -->
+                        <div class="control-group">
+                            <h3>Horizontal</h3>
+                            <button
+                                class="btn btn-filter"
+                                data-filter="combine_filter_bottom"
+                            >
+                                Split ↓
+                            </button>
+                            <button
+                                class="btn btn-filter"
+                                data-filter="combine_filter_top"
+                            >
+                                Split ↑
+                            </button>
+                        </div>
+
+                        <!-- Vertical Filters -->
+                        <div class="control-group">
+                            <h3>Vertical</h3>
+                            <button
+                                class="btn btn-filter"
+                                data-filter="combine_filter_left"
+                            >
+                                Split ←
+                            </button>
+                            <button
+                                class="btn btn-filter"
+                                data-filter="combine_filter_right"
+                            >
+                                Split →
+                            </button>
+                        </div>
+
+                        <!-- Diagonal Filters -->
+                        <div class="control-group">
+                            <h3>Diagonal</h3>
+                            <button
+                                class="btn btn-filter"
+                                data-filter="combine_diagonal_tl_br"
+                            >
+                                Split ↘
+                            </button>
+                            <button
+                                class="btn btn-filter"
+                                data-filter="combine_diagonal_tr_bl"
+                            >
+                                Split ↙
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Horizontal Filters -->
-                    <div class="control-group">
-                        <h3>Horizontal</h3>
-                        <button class="btn btn-filter" data-filter="combine_filter_top">Split ↑</button>
-                        <button class="btn btn-filter" data-filter="combine_filter_bottom">Split ↓</button>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="resetBtn">
+                            Reset to Original
+                        </button>
+                        <button class="btn btn-success" id="downloadBtn">
+                            Download Processed Image
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Image Display Section -->
+                <section
+                    class="images-section"
+                    id="imagesSection"
+                    style="display: none"
+                >
+                    <div class="image-container">
+                        <h3>Original Image</h3>
+                        <div class="image-wrapper">
+                            <canvas id="originalCanvas"></canvas>
+                            <div class="image-info" id="originalInfo"></div>
+                        </div>
                     </div>
 
-                    <!-- Vertical Filters -->
-                    <div class="control-group">
-                        <h3>Vertical</h3>
-                        <button class="btn btn-filter" data-filter="combine_filter_left">Split ←</button>
-                        <button class="btn btn-filter" data-filter="combine_filter_right">Split →</button>
-                    </div>
+                    <div class="arrow">→</div>
 
-                    <!-- Diagonal Filters -->
-                    <div class="control-group">
-                        <h3>Diagonal</h3>
-                        <button class="btn btn-filter" data-filter="combine_diagonal_tl_br">Split ↘</button>
-                        <button class="btn btn-filter" data-filter="combine_diagonal_tr_bl">Split ↙</button>
+                    <div class="image-container">
+                        <h3>Processed Image</h3>
+                        <div class="image-wrapper">
+                            <canvas id="processedCanvas"></canvas>
+                            <div class="image-info" id="processedInfo"></div>
+                        </div>
                     </div>
+                </section>
+
+                <!-- Loading Spinner -->
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <p>Processing image...</p>
                 </div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" id="resetBtn">Reset to Original</button>
-                    <button class="btn btn-success" id="downloadBtn">Download Processed Image</button>
-                </div>
-            </section>
+                <!-- Error Message -->
+                <div class="error-message" id="errorMessage"></div>
+            </main>
 
-            <!-- Image Display Section -->
-            <section class="images-section" id="imagesSection" style="display: none;">
-                <div class="image-container">
-                    <h3>Original Image</h3>
-                    <div class="image-wrapper">
-                        <canvas id="originalCanvas"></canvas>
-                        <div class="image-info" id="originalInfo"></div>
-                    </div>
-                </div>
+            <footer>
+                <p>
+                    Built with
+                    <a href="https://www.rust-lang.org/" target="_blank"
+                        >Rust</a
+                    >
+                    and
+                    <a href="https://webassembly.org/" target="_blank"
+                        >WebAssembly</a
+                    >
+                </p>
+                <p class="tech-info">
+                    Supported formats: PNG, JPEG, WebP • All processing happens
+                    in your browser
+                </p>
+            </footer>
+        </div>
 
-                <div class="arrow">→</div>
-
-                <div class="image-container">
-                    <h3>Processed Image</h3>
-                    <div class="image-wrapper">
-                        <canvas id="processedCanvas"></canvas>
-                        <div class="image-info" id="processedInfo"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Loading Spinner -->
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="spinner"></div>
-                <p>Processing image...</p>
-            </div>
-
-            <!-- Error Message -->
-            <div class="error-message" id="errorMessage"></div>
-        </main>
-
-        <footer>
-            <p>Built with <a href="https://www.rust-lang.org/" target="_blank">Rust</a> and <a href="https://webassembly.org/" target="_blank">WebAssembly</a></p>
-            <p class="tech-info">
-                Supported formats: PNG, JPEG, WebP • All processing happens in your browser
-            </p>
-        </footer>
-    </div>
-
-    <script type="module" src="app.js"></script>
-</body>
+        <script type="module" src="app.js"></script>
+    </body>
 </html>
