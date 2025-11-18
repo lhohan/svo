@@ -60,6 +60,12 @@
                             <input type="range" id="contrastSlider" min="-100" max="100" step="5" value="0">
                             <button class="btn btn-filter btn-small" data-filter="adjust_contrast">Apply Contrast</button>
                         </div>
+                        <div class="slider-control">
+                            <label>Crop</label>
+                            <button class="btn btn-filter" id="cropModeBtn">Select Square Area</button>
+                            <button class="btn btn-success btn-small" id="applyCropBtn" style="display:none;">Apply Crop</button>
+                            <button class="btn btn-secondary btn-small" id="cancelCropBtn" style="display:none;">Cancel</button>
+                        </div>
                     </div>
 
                     <!-- Transformations -->
@@ -70,14 +76,6 @@
                         <button class="btn btn-filter" data-filter="rotate270">Rotate 270°</button>
                         <button class="btn btn-filter" data-filter="fliph">Flip Horizontal</button>
                         <button class="btn btn-filter" data-filter="flipv">Flip Vertical</button>
-                    </div>
-
-                    <!-- Crop -->
-                    <div class="control-group">
-                        <h3>Crop</h3>
-                        <button class="btn btn-filter" id="cropModeBtn">Select Square Area</button>
-                        <button class="btn btn-success btn-small" id="applyCropBtn" style="display:none;">Apply Crop</button>
-                        <button class="btn btn-secondary btn-small" id="cancelCropBtn" style="display:none;">Cancel</button>
                     </div>
 
                     <!-- Lightning Filters -->
