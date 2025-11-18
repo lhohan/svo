@@ -34,6 +34,15 @@
                 <h2>Image Processing Operations</h2>
 
                 <div class="controls-grid">
+                    <!-- Lightning Filters -->
+                    <div class="control-group">
+                        <h3>Lightning Filters</h3>
+                        <button class="btn btn-filter" data-filter="combine_top_bottom">Horizontal Split ⚡</button>
+                        <button class="btn btn-filter" data-filter="combine_left_right">Vertical Split ⚡</button>
+                        <button class="btn btn-filter" data-filter="combine_diagonal_tl_br">Diagonal ↘</button>
+                        <button class="btn btn-filter" data-filter="combine_diagonal_tr_bl">Diagonal ↙</button>
+                    </div>
+
                     <!-- Adjustments -->
                     <div class="control-group">
                         <h3>Adjustments</h3>
@@ -58,15 +67,6 @@
                             <input type="range" id="contrastSlider" min="-100" max="100" step="5" value="0">
                             <button class="btn btn-filter btn-small" data-filter="adjust_contrast">Apply Contrast</button>
                         </div>
-                    </div>
-
-                    <!-- Lightning Filters -->
-                    <div class="control-group">
-                        <h3>Lightning Filters</h3>
-                        <button class="btn btn-filter" data-filter="combine_top_bottom">Horizontal Split ⚡</button>
-                        <button class="btn btn-filter" data-filter="combine_left_right">Vertical Split ⚡</button>
-                        <button class="btn btn-filter" data-filter="combine_diagonal_tl_br">Diagonal ↘</button>
-                        <button class="btn btn-filter" data-filter="combine_diagonal_tr_bl">Diagonal ↙</button>
                     </div>
                 </div>
 
