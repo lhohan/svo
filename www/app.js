@@ -65,6 +65,13 @@ async function loadOverlayImage() {
  */
 async function initWasm() {
     try {
+        // Check for WebAssembly support
+        if (!('WebAssembly' in window)) {
+            showError('WebAssembly is not supported in your browser. Please use a modern browser like Chrome 57+, Firefox 52+, Safari 11+, or Edge 16+.');
+            console.error('WebAssembly not supported');
+            return;
+        }
+
         showLoading(true);
         await init();
         wasmModule = wasm;
@@ -77,6 +84,7 @@ async function initWasm() {
     } catch (error) {
         showError('Failed to load WebAssembly module: ' + error.message);
         showLoading(false);
+        console.error('WASM initialization error:', error);
     }
 }
 
