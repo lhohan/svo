@@ -235,17 +235,29 @@ async function applyFilter(filterName, ...args) {
             case 'flipv':
                 result = wasmModule.flipv(currentImageData);
                 break;
-            case 'combine_top_bottom':
+            case 'combine_filter_top':
                 if (!overlayImageData) {
                     throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
                 }
-                result = wasmModule.combine_top_bottom(currentImageData, overlayImageData);
+                result = wasmModule.combine_filter_top(currentImageData, overlayImageData);
                 break;
-            case 'combine_left_right':
+            case 'combine_filter_bottom':
                 if (!overlayImageData) {
                     throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
                 }
-                result = wasmModule.combine_left_right(currentImageData, overlayImageData);
+                result = wasmModule.combine_filter_bottom(currentImageData, overlayImageData);
+                break;
+            case 'combine_filter_left':
+                if (!overlayImageData) {
+                    throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
+                }
+                result = wasmModule.combine_filter_left(currentImageData, overlayImageData);
+                break;
+            case 'combine_filter_right':
+                if (!overlayImageData) {
+                    throw new Error('Overlay image not loaded. Please ensure lightning.png is available.');
+                }
+                result = wasmModule.combine_filter_right(currentImageData, overlayImageData);
                 break;
             case 'combine_diagonal_tl_br':
                 if (!overlayImageData) {

@@ -5,23 +5,25 @@
 }
 
 :root {
-    --primary-color: #6366f1;
-    --primary-hover: #4f46e5;
-    --secondary-color: #64748b;
-    --success-color: #22c55e;
-    --danger-color: #ef4444;
-    --bg-color: #f8fafc;
+    --primary-color: #0cec91;
+    --primary-hover: #636363;
+    --secondary-color: #636363;
+    --success-color: #0cec91;
+    --danger-color: #d8613c;
+    --bg-color: #e6f8c5;
     --card-bg: #ffffff;
-    --text-color: #1e293b;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
+    --text-color: #42414f;
+    --text-muted: #636363;
+    --border-color: #b1c5a4;
+    --active-color: #111111;
+    --sage-green: #b1c5a4;
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background: #e6f8c5;
     color: var(--text-color);
     line-height: 1.6;
     min-height: 100vh;
@@ -39,21 +41,24 @@ body {
 
 /* Header */
 header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #e6f8c5;
+    color: #42414f;
     text-align: center;
     padding: 3rem 2rem;
 }
 
 header h1 {
+    font-family: 'Montserrat', sans-serif;
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
     font-weight: 700;
+    color: #42414f;
 }
 
 .subtitle {
     font-size: 1.1rem;
-    opacity: 0.95;
+    opacity: 0.9;
+    color: #636363;
 }
 
 /* Main Content */
@@ -68,24 +73,24 @@ main {
 }
 
 .upload-area {
-    border: 3px dashed var(--border-color);
+    border: 3px dashed #b1c5a4;
     border-radius: 1rem;
     padding: 3rem 2rem;
     text-align: center;
     transition: all 0.3s ease;
-    background: var(--bg-color);
+    background: white;
     cursor: pointer;
 }
 
 .upload-area:hover,
 .upload-area.dragover {
-    border-color: var(--primary-color);
-    background: #eef2ff;
+    border-color: #0cec91;
+    background: #f0fef6;
     transform: translateY(-2px);
 }
 
 .upload-area svg {
-    color: var(--primary-color);
+    color: #0cec91;
     margin-bottom: 1rem;
 }
 
@@ -102,15 +107,17 @@ main {
 
 /* Buttons */
 .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.6rem 1rem;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 0.33rem;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-block;
     text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn:hover {
@@ -123,43 +130,52 @@ main {
 }
 
 .btn-primary {
-    background: var(--primary-color);
-    color: white;
+    background: #0cec91;
+    color: #14343e;
 }
 
 .btn-primary:hover {
-    background: var(--primary-hover);
+    background: #636363;
+    color: #f9f9f9;
+}
+
+.btn-primary:active {
+    background: #111111;
+    color: #f9f9f9;
 }
 
 .btn-secondary {
-    background: var(--secondary-color);
-    color: white;
+    background: #636363;
+    color: #f9f9f9;
 }
 
 .btn-secondary:hover {
-    background: #475569;
+    background: #111111;
+    color: #f9f9f9;
 }
 
 .btn-success {
-    background: var(--success-color);
-    color: white;
+    background: #0cec91;
+    color: #14343e;
 }
 
 .btn-success:hover {
-    background: #16a34a;
+    background: #636363;
+    color: #f9f9f9;
 }
 
 .btn-filter {
-    background: white;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    background: #0cec91;
+    color: #14343e;
+    border: 2px solid #0cec91;
     width: 100%;
     margin-bottom: 0.5rem;
 }
 
 .btn-filter:hover {
-    background: var(--primary-color);
-    color: white;
+    background: #636363;
+    color: #f9f9f9;
+    border-color: #636363;
 }
 
 .btn-small {
@@ -171,11 +187,13 @@ main {
 .controls-section {
     margin-bottom: 2rem;
     padding: 2rem;
-    background: var(--bg-color);
+    background: white;
     border-radius: 1rem;
+    border: 1px solid #b1c5a4;
 }
 
 .controls-section h2 {
+    font-family: 'Montserrat', sans-serif;
     margin-bottom: 1.5rem;
     color: var(--text-color);
 }
@@ -195,10 +213,11 @@ main {
 }
 
 .control-group h3 {
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.1rem;
     margin-bottom: 1rem;
     color: var(--text-color);
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid #0cec91;
     padding-bottom: 0.5rem;
 }
 
@@ -233,7 +252,7 @@ main {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: #0cec91;
     cursor: pointer;
 }
 
@@ -241,7 +260,7 @@ main {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: #0cec91;
     cursor: pointer;
     border: none;
 }
@@ -263,13 +282,15 @@ main {
 }
 
 .image-container {
-    background: var(--bg-color);
+    background: white;
     padding: 1.5rem;
     border-radius: 1rem;
     box-shadow: var(--shadow);
+    border: 1px solid #b1c5a4;
 }
 
 .image-container h3 {
+    font-family: 'Montserrat', sans-serif;
     margin-bottom: 1rem;
     color: var(--text-color);
     text-align: center;
@@ -301,7 +322,7 @@ canvas {
 
 .arrow {
     font-size: 2rem;
-    color: var(--primary-color);
+    color: #0cec91;
     align-self: center;
     font-weight: bold;
 }
@@ -318,8 +339,8 @@ canvas {
 }
 
 .crop-selection {
-    border: 2px dashed var(--primary-color);
-    background: rgba(99, 102, 241, 0.1);
+    border: 2px dashed #0cec91;
+    background: rgba(12, 236, 145, 0.1);
     position: absolute;
 }
 
@@ -378,19 +399,19 @@ canvas {
 
 /* Footer */
 footer {
-    background: var(--bg-color);
+    background: #e6f8c5;
     padding: 2rem;
     text-align: center;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid #b1c5a4;
 }
 
 footer p {
     margin-bottom: 0.5rem;
-    color: var(--text-muted);
+    color: #636363;
 }
 
 footer a {
-    color: var(--primary-color);
+    color: #0cec91;
     text-decoration: none;
     font-weight: 500;
 }
