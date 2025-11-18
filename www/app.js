@@ -325,13 +325,23 @@ function downloadImage() {
  */
 function getCanvasCoordinates(mouseX, mouseY) {
     const rect = processedCanvas.getBoundingClientRect();
-    const scaleX = processedCanvas.width / rect.width;
-    const scaleY = processedCanvas.height / rect.height;
 
+    // Calculate the actual pixel size of the canvas on screen
+    const displayWidth = rect.width;
+    const displayHeight = rect.height;
+
+    // Calculate scaling factors (canvas resolution / display size)
+    const scaleX = processedCanvas.width / displayWidth;
+    const scaleY = processedCanvas.height / displayHeight;
+
+    // Convert mouse position to canvas pixel coordinates
     const canvasX = (mouseX - rect.left) * scaleX;
     const canvasY = (mouseY - rect.top) * scaleY;
 
-    return { x: Math.max(0, canvasX), y: Math.max(0, canvasY) };
+    return {
+        x: Math.max(0, Math.min(canvasX, processedCanvas.width)),
+        y: Math.max(0, Math.min(canvasY, processedCanvas.height))
+    };
 }
 
 /**
@@ -346,19 +356,26 @@ function createCropOverlay() {
     // Create overlay canvas
     cropOverlayCanvas = document.createElement('canvas');
     cropOverlayCanvas.id = 'cropOverlay';
-    cropOverlayCanvas.width = processedCanvas.width;
-    cropOverlayCanvas.height = processedCanvas.height;
     cropOverlayCanvas.className = 'crop-overlay';
 
-    // Position it absolutely over the processed canvas
-    const canvasRect = processedCanvas.getBoundingClientRect();
-    cropOverlayCanvas.style.position = 'absolute';
-    cropOverlayCanvas.style.left = canvasRect.left + 'px';
-    cropOverlayCanvas.style.top = canvasRect.top + 'px';
+    // Get the image wrapper to append the overlay to its parent (image-wrapper)
+    const imageWrapper = processedCanvas.parentElement;
+
+    // Set canvas to match processed canvas dimensions (both internal and display)
+    cropOverlayCanvas.width = processedCanvas.width;
+    cropOverlayCanvas.height = processedCanvas.height;
     cropOverlayCanvas.style.width = processedCanvas.offsetWidth + 'px';
     cropOverlayCanvas.style.height = processedCanvas.offsetHeight + 'px';
 
-    document.body.appendChild(cropOverlayCanvas);
+    // Position relatively within the image wrapper
+    cropOverlayCanvas.style.position = 'absolute';
+    cropOverlayCanvas.style.left = '0';
+    cropOverlayCanvas.style.top = '0';
+    cropOverlayCanvas.style.pointerEvents = 'none';
+
+    // Append to image wrapper (which should have position: relative)
+    imageWrapper.style.position = 'relative';
+    imageWrapper.appendChild(cropOverlayCanvas);
 }
 
 /**

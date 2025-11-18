@@ -311,6 +311,9 @@ canvas {
     cursor: crosshair;
     z-index: 100;
     border-radius: 0.5rem;
+    display: block;
+    margin: 0 auto;
+    pointer-events: auto;
 }
 
 .crop-selection {
