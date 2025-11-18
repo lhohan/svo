@@ -447,12 +447,25 @@ function enterCropMode() {
     createCropOverlay();
     originalCanvas.style.cursor = 'crosshair';
 
-    // Reset crop state
-    cropStartX = null;
-    cropStartY = null;
-    cropCurrentX = null;
-    cropCurrentY = null;
-    cropSize = null;
+    // Calculate default centered square selection (80% of smaller dimension)
+    const canvasWidth = originalCanvas.width;
+    const canvasHeight = originalCanvas.height;
+    const smallerDimension = Math.min(canvasWidth, canvasHeight);
+    const defaultSize = Math.floor(smallerDimension * 0.8);
+
+    // Center the selection
+    const centerX = Math.floor(canvasWidth / 2);
+    const centerY = Math.floor(canvasHeight / 2);
+
+    // Set crop coordinates to create a centered square
+    cropStartX = Math.floor(centerX - defaultSize / 2);
+    cropStartY = Math.floor(centerY - defaultSize / 2);
+    cropCurrentX = Math.floor(centerX + defaultSize / 2);
+    cropCurrentY = Math.floor(centerY + defaultSize / 2);
+    cropSize = defaultSize;
+
+    // Draw the default selection immediately
+    drawCropSelection();
 }
 
 /**
