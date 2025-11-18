@@ -3,6 +3,7 @@ import init, * as wasm from './pkg/image_processor_wasm.js';
 
 // Global state
 let wasmModule = null;
+let uploadedImageData = null;
 let originalImageData = null;
 let currentImageData = null;
 let originalFileName = '';
@@ -125,10 +126,11 @@ function handleFileSelect(file) {
     const reader = new FileReader();
 
     reader.onload = function(e) {
-        originalImageData = new Uint8Array(e.target.result);
-        currentImageData = originalImageData;
-        displayImage(originalImageData, originalCanvas, originalInfo);
-        displayImage(originalImageData, processedCanvas, processedInfo);
+        uploadedImageData = new Uint8Array(e.target.result);
+        originalImageData = uploadedImageData;
+        currentImageData = uploadedImageData;
+        displayImage(uploadedImageData, originalCanvas, originalInfo);
+        displayImage(uploadedImageData, processedCanvas, processedInfo);
 
         // Show controls and images
         controlsSection.style.display = 'block';
@@ -282,13 +284,18 @@ async function applyFilter(filterName, ...args) {
 }
 
 /**
- * Reset to original image
+ * Reset to original uploaded image
  */
 function resetImage() {
-    if (!originalImageData) return;
+    if (!uploadedImageData) return;
 
-    currentImageData = originalImageData;
-    displayImage(currentImageData, processedCanvas, processedInfo);
+    // Reset to the originally uploaded image
+    originalImageData = uploadedImageData;
+    currentImageData = uploadedImageData;
+
+    // Redisplay both canvases with uploaded image
+    displayImage(uploadedImageData, originalCanvas, originalInfo);
+    displayImage(uploadedImageData, processedCanvas, processedInfo);
 
     // Reset sliders
     blurSlider.value = 2.0;
