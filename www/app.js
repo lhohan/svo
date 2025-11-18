@@ -368,9 +368,16 @@ function createCropOverlay() {
     cropOverlayCanvas.style.height = processedCanvas.offsetHeight + 'px';
 
     // Position relatively within the image wrapper
+    // Calculate offset to account for canvas centering (margin: 0 auto)
+    const canvasRect = processedCanvas.getBoundingClientRect();
+    const wrapperRect = imageWrapper.getBoundingClientRect();
+
+    const leftOffset = canvasRect.left - wrapperRect.left;
+    const topOffset = canvasRect.top - wrapperRect.top;
+
     cropOverlayCanvas.style.position = 'absolute';
-    cropOverlayCanvas.style.left = '0';
-    cropOverlayCanvas.style.top = '0';
+    cropOverlayCanvas.style.left = leftOffset + 'px';
+    cropOverlayCanvas.style.top = topOffset + 'px';
     cropOverlayCanvas.style.pointerEvents = 'none';
 
     // Append to image wrapper (which should have position: relative)
