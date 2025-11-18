@@ -256,7 +256,7 @@ When making changes, test:
 
 ## Git Workflow
 
-**Branch:** `claude/rust-wasm-image-processor-01GKBs4At4ZQxCopaAT7RBvf`
+**Branch:** `claude/code-documentation-review-017Vb3gAk1vf5uzBTawXyu5o`
 
 **Files to commit:**
 - Source files: `src/`, `www/`, `Cargo.toml`, `README.md`
