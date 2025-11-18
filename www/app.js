@@ -321,31 +321,31 @@ function downloadImage() {
 }
 
 /**
- * Convert mouse coordinates to canvas coordinates
+ * Convert mouse coordinates to original canvas coordinates
  */
 function getCanvasCoordinates(mouseX, mouseY) {
-    const rect = processedCanvas.getBoundingClientRect();
+    const rect = originalCanvas.getBoundingClientRect();
 
     // Calculate the actual pixel size of the canvas on screen
     const displayWidth = rect.width;
     const displayHeight = rect.height;
 
     // Calculate scaling factors (canvas resolution / display size)
-    const scaleX = processedCanvas.width / displayWidth;
-    const scaleY = processedCanvas.height / displayHeight;
+    const scaleX = originalCanvas.width / displayWidth;
+    const scaleY = originalCanvas.height / displayHeight;
 
     // Convert mouse position to canvas pixel coordinates
     const canvasX = (mouseX - rect.left) * scaleX;
     const canvasY = (mouseY - rect.top) * scaleY;
 
     return {
-        x: Math.max(0, Math.min(canvasX, processedCanvas.width)),
-        y: Math.max(0, Math.min(canvasY, processedCanvas.height))
+        x: Math.max(0, Math.min(canvasX, originalCanvas.width)),
+        y: Math.max(0, Math.min(canvasY, originalCanvas.height))
     };
 }
 
 /**
- * Create overlay canvas for crop selection
+ * Create overlay canvas for crop selection (on original image)
  */
 function createCropOverlay() {
     // Remove existing overlay if any
@@ -358,18 +358,18 @@ function createCropOverlay() {
     cropOverlayCanvas.id = 'cropOverlay';
     cropOverlayCanvas.className = 'crop-overlay';
 
-    // Get the image wrapper to append the overlay to its parent (image-wrapper)
-    const imageWrapper = processedCanvas.parentElement;
+    // Get the image wrapper for the original image
+    const imageWrapper = originalCanvas.parentElement;
 
-    // Set canvas to match processed canvas dimensions (both internal and display)
-    cropOverlayCanvas.width = processedCanvas.width;
-    cropOverlayCanvas.height = processedCanvas.height;
-    cropOverlayCanvas.style.width = processedCanvas.offsetWidth + 'px';
-    cropOverlayCanvas.style.height = processedCanvas.offsetHeight + 'px';
+    // Set canvas to match original canvas dimensions (both internal and display)
+    cropOverlayCanvas.width = originalCanvas.width;
+    cropOverlayCanvas.height = originalCanvas.height;
+    cropOverlayCanvas.style.width = originalCanvas.offsetWidth + 'px';
+    cropOverlayCanvas.style.height = originalCanvas.offsetHeight + 'px';
 
     // Position relatively within the image wrapper
     // Calculate offset to account for canvas centering (margin: 0 auto)
-    const canvasRect = processedCanvas.getBoundingClientRect();
+    const canvasRect = originalCanvas.getBoundingClientRect();
     const wrapperRect = imageWrapper.getBoundingClientRect();
 
     const leftOffset = canvasRect.left - wrapperRect.left;
@@ -436,7 +436,7 @@ function drawCropSelection() {
 }
 
 /**
- * Enter crop mode
+ * Enter crop mode (on original image)
  */
 function enterCropMode() {
     cropMode = true;
@@ -445,7 +445,7 @@ function enterCropMode() {
     cancelCropBtn.style.display = 'inline-block';
 
     createCropOverlay();
-    processedCanvas.style.cursor = 'crosshair';
+    originalCanvas.style.cursor = 'crosshair';
 
     // Reset crop state
     cropStartX = null;
@@ -463,7 +463,7 @@ function exitCropMode() {
     cropModeBtn.style.display = 'inline-block';
     applyCropBtn.style.display = 'none';
     cancelCropBtn.style.display = 'none';
-    processedCanvas.style.cursor = 'default';
+    originalCanvas.style.cursor = 'default';
 
     if (cropOverlayCanvas) {
         cropOverlayCanvas.remove();
@@ -496,8 +496,30 @@ async function applyCrop() {
 
     exitCropMode();
 
-    // Apply crop via WASM
-    await applyFilter('crop_square', x, y, size);
+    // Apply crop via WASM to the original image data
+    try {
+        showLoading(true);
+
+        // Small delay to allow UI to update
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        // Crop from original image
+        const croppedData = wasmModule.crop_square(originalImageData, x, y, size);
+
+        // Update both original and current to the cropped version
+        originalImageData = croppedData;
+        currentImageData = croppedData;
+
+        // Display the cropped image on both canvases
+        displayImage(croppedData, originalCanvas, originalInfo);
+        displayImage(croppedData, processedCanvas, processedInfo);
+
+        showLoading(false);
+    } catch (error) {
+        showError('Crop failed: ' + error.message);
+        showLoading(false);
+        console.error('Crop error:', error);
+    }
 }
 
 /**
@@ -582,8 +604,8 @@ cropModeBtn.addEventListener('click', enterCropMode);
 applyCropBtn.addEventListener('click', applyCrop);
 cancelCropBtn.addEventListener('click', cancelCrop);
 
-// Canvas mouse events for crop selection
-processedCanvas.addEventListener('mousedown', (e) => {
+// Canvas mouse events for crop selection (on original canvas)
+originalCanvas.addEventListener('mousedown', (e) => {
     if (!cropMode) return;
 
     const coords = getCanvasCoordinates(e.clientX, e.clientY);
@@ -595,7 +617,7 @@ processedCanvas.addEventListener('mousedown', (e) => {
     drawCropSelection();
 });
 
-processedCanvas.addEventListener('mousemove', (e) => {
+originalCanvas.addEventListener('mousemove', (e) => {
     if (!cropMode || cropStartX === null) return;
 
     const coords = getCanvasCoordinates(e.clientX, e.clientY);
@@ -605,11 +627,11 @@ processedCanvas.addEventListener('mousemove', (e) => {
     drawCropSelection();
 });
 
-processedCanvas.addEventListener('mouseup', () => {
+originalCanvas.addEventListener('mouseup', () => {
     // Selection is finalized, ready for apply
 });
 
-processedCanvas.addEventListener('mouseleave', () => {
+originalCanvas.addEventListener('mouseleave', () => {
     if (cropMode && cropStartX !== null) {
         // Continue showing the selection
     }
