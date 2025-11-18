@@ -37,13 +37,6 @@ const errorMessage = document.getElementById('errorMessage');
 const resetBtn = document.getElementById('resetBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 
-// Slider elements
-const blurSlider = document.getElementById('blurSlider');
-const blurValue = document.getElementById('blurValue');
-const brightnessSlider = document.getElementById('brightnessSlider');
-const brightnessValue = document.getElementById('brightnessValue');
-const contrastSlider = document.getElementById('contrastSlider');
-const contrastValue = document.getElementById('contrastValue');
 
 // Crop buttons
 const cropModeBtn = document.getElementById('cropModeBtn');
@@ -309,13 +302,6 @@ function resetImage() {
     displayImage(uploadedImageData, originalCanvas, originalInfo);
     displayImage(uploadedImageData, processedCanvas, processedInfo);
 
-    // Reset sliders
-    blurSlider.value = 2.0;
-    blurValue.textContent = '2.0';
-    brightnessSlider.value = 0;
-    brightnessValue.textContent = '0';
-    contrastSlider.value = 0;
-    contrastValue.textContent = '0';
 }
 
 /**
@@ -602,34 +588,10 @@ document.querySelectorAll('.btn-filter').forEach(btn => {
     btn.addEventListener('click', function() {
         const filter = this.getAttribute('data-filter');
 
-        switch (filter) {
-            case 'blur':
-                applyFilter('blur', blurSlider.value);
-                break;
-            case 'brighten':
-                applyFilter('brighten', brightnessSlider.value);
-                break;
-            case 'adjust_contrast':
-                applyFilter('adjust_contrast', contrastSlider.value);
-                break;
-            default:
-                applyFilter(filter);
-        }
+        applyFilter(filter);
     });
 });
 
-// Sliders
-blurSlider.addEventListener('input', (e) => {
-    blurValue.textContent = e.target.value;
-});
-
-brightnessSlider.addEventListener('input', (e) => {
-    brightnessValue.textContent = e.target.value;
-});
-
-contrastSlider.addEventListener('input', (e) => {
-    contrastValue.textContent = e.target.value;
-});
 
 // Action buttons
 resetBtn.addEventListener('click', resetImage);
