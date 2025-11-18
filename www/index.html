@@ -46,13 +46,27 @@
                             <button class="btn btn-success btn-small" id="applyCropBtn" style="display:none;">Apply Crop</button>
                             <button class="btn btn-secondary btn-small" id="cancelCropBtn" style="display:none;">Cancel</button>
                         </div>
-                        <h3 style="margin-top: 1.5rem;">Lightning Filters</h3>
-                        <button class="btn btn-filter" data-filter="combine_filter_top">Horizontal Split ↑</button>
-                        <button class="btn btn-filter" data-filter="combine_filter_bottom">Horizontal Split ↓</button>
-                        <button class="btn btn-filter" data-filter="combine_filter_left">Vertical Split ←</button>
-                        <button class="btn btn-filter" data-filter="combine_filter_right">Vertical Split →</button>
-                        <button class="btn btn-filter" data-filter="combine_diagonal_tl_br">Diagonal ↘</button>
-                        <button class="btn btn-filter" data-filter="combine_diagonal_tr_bl">Diagonal ↙</button>
+                    </div>
+
+                    <!-- Horizontal Filters -->
+                    <div class="control-group">
+                        <h3>Horizontal</h3>
+                        <button class="btn btn-filter" data-filter="combine_filter_top">Split ↑</button>
+                        <button class="btn btn-filter" data-filter="combine_filter_bottom">Split ↓</button>
+                    </div>
+
+                    <!-- Vertical Filters -->
+                    <div class="control-group">
+                        <h3>Vertical</h3>
+                        <button class="btn btn-filter" data-filter="combine_filter_left">Split ←</button>
+                        <button class="btn btn-filter" data-filter="combine_filter_right">Split →</button>
+                    </div>
+
+                    <!-- Diagonal Filters -->
+                    <div class="control-group">
+                        <h3>Diagonal</h3>
+                        <button class="btn btn-filter" data-filter="combine_diagonal_tl_br">Split ↘</button>
+                        <button class="btn btn-filter" data-filter="combine_diagonal_tr_bl">Split ↙</button>
                     </div>
                 </div>
 
