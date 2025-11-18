@@ -10,10 +10,12 @@ run:
 # Build WASM in development mode (faster iteration)
 build:
     wasm-pack build --target web
+    cp -r pkg www/
 
 # Build WASM in release mode (optimized for production)
 build-release:
     wasm-pack build --target web --release
+    cp -r pkg www/
 
 # Build and run the server in one command
 dev: build

@@ -71,14 +71,23 @@ pub fn my_filter(data: &[u8]) -> Result<Vec<u8>, JsValue> {
 
 **Reason:** ES6 module imports (`import ... from '../pkg/...'`) are blocked by CORS on `file://` URLs
 
-**Options:**
-- `python3 -m http.server 8080` (recommended)
-- `npx http-server`
-- Any local web server
+Server used:
+- `simple-http-server`
+
+## Build environment
+
+Dependencies are managed through Nix. If you have `direnv` setup the dev environment will load automatically.
+
+If not: please install the applications listed in the `flake.nix` file (starting around line #13).
 
 ## Build Process
 
 ### Standard Build
+
+```bash
+just build
+```
+Under the hood:
 ```bash
 wasm-pack build --target web
 ```
@@ -306,7 +315,7 @@ When making changes, test:
 
 ## Notes for AI Assistants
 
-- Always rebuild with `wasm-pack build --target web` after Rust changes
+- Always rebuild with `just build` after Rust changes
 - Never use `.unwrap()` in exported WASM functions
 - Test changes in browser, not just compilation
 - Keep frontend vanilla JS (no frameworks)

@@ -1,5 +1,5 @@
 // Import the WebAssembly module
-import init, * as wasm from '../pkg/image_processor_wasm.js';
+import init, * as wasm from './pkg/image_processor_wasm.js';
 
 // Global state
 let wasmModule = null;

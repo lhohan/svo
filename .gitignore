@@ -5,6 +5,7 @@
 
 # WASM build output
 /pkg/
+/www/pkg/
 wasm-pack.log
 
 # Cargo lock file (uncomment if this is a library)
