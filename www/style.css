@@ -144,6 +144,14 @@ main {
     color: #f9f9f9;
 }
 
+#cropModeBtn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 3.5rem;
+}
+
 .btn-secondary {
     background: #636363;
     color: #f9f9f9;
@@ -170,6 +178,12 @@ main {
     border: 2px solid #0cec91;
     width: 100%;
     margin-bottom: 0.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 3.5rem;
 }
 
 .slider-control .btn-primary {
@@ -181,6 +195,20 @@ main {
     background: #636363;
     color: #f9f9f9;
     border-color: #636363;
+}
+
+.recommended-badge {
+    display: block;
+    background: rgba(245, 158, 11, 0.9);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    margin-top: 0.25rem;
 }
 
 .btn-small {
