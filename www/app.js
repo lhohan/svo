@@ -16,6 +16,10 @@ let cropStartY = null;
 let cropCurrentX = null;
 let cropCurrentY = null;
 let cropSize = null;
+let isDragging = false;
+let dragStartX = null;
+let dragStartY = null;
+const MIN_DRAG_DISTANCE = 5;
 
 // DOM Elements
 const uploadArea = document.getElementById('uploadArea');
@@ -622,31 +626,62 @@ originalCanvas.addEventListener('mousedown', (e) => {
     if (!cropMode) return;
 
     const coords = getCanvasCoordinates(e.clientX, e.clientY);
-    cropStartX = coords.x;
-    cropStartY = coords.y;
-    cropCurrentX = cropStartX;
-    cropCurrentY = cropStartY;
 
-    drawCropSelection();
+    // Store click position temporarily
+    dragStartX = coords.x;
+    dragStartY = coords.y;
+    isDragging = false;
+
+    // Do NOT update cropStartX/cropCurrentX yet
+    // Do NOT call drawCropSelection() yet
+    // This preserves the existing selection until user actually drags
 });
 
 originalCanvas.addEventListener('mousemove', (e) => {
-    if (!cropMode || cropStartX === null) return;
+    if (!cropMode || dragStartX === null) return;
 
     const coords = getCanvasCoordinates(e.clientX, e.clientY);
+
+    // Check if user has dragged beyond threshold
+    const dragDistance = Math.hypot(coords.x - dragStartX, coords.y - dragStartY);
+
+    if (!isDragging && dragDistance < MIN_DRAG_DISTANCE) {
+        // Not dragging yet, ignore small movements
+        return;
+    }
+
+    if (!isDragging) {
+        // Start drag: now we can update the crop coordinates
+        isDragging = true;
+        cropStartX = dragStartX;
+        cropStartY = dragStartY;
+    }
+
+    // Update current position and redraw
     cropCurrentX = coords.x;
     cropCurrentY = coords.y;
-
     drawCropSelection();
 });
 
 originalCanvas.addEventListener('mouseup', () => {
+    if (!cropMode) return;
+
+    // Reset drag tracking
+    dragStartX = null;
+    dragStartY = null;
+    isDragging = false;
+
     // Selection is finalized, ready for apply
+    // cropStartX/cropCurrentX remain set (if dragging occurred)
 });
 
 originalCanvas.addEventListener('mouseleave', () => {
-    if (cropMode && cropStartX !== null) {
-        // Continue showing the selection
+    if (cropMode && dragStartX !== null) {
+        // User left canvas while clicking - cancel the drag
+        dragStartX = null;
+        dragStartY = null;
+        isDragging = false;
+        // Keep existing selection
     }
 });
 
