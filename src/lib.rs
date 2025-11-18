@@ -84,6 +84,10 @@ pub fn blur(data: &[u8], sigma: f32) -> Result<Vec<u8>, JsValue> {
         return Err(JsValue::from_str("Sigma must be non-negative"));
     }
 
+    if sigma > 20.0 {
+        return Err(JsValue::from_str("Sigma is too large (max: 20.0). Very high blur values are computationally expensive."));
+    }
+
     let img = bytes_to_image(data)?;
     let blurred = img.blur(sigma);
 
@@ -102,6 +106,10 @@ pub fn blur(data: &[u8], sigma: f32) -> Result<Vec<u8>, JsValue> {
 pub fn brighten(data: &[u8], value: i32) -> Result<Vec<u8>, JsValue> {
     log(&format!("Processing: Brightness adjustment by {}", value));
 
+    if value < -100 || value > 100 {
+        return Err(JsValue::from_str("Brightness value must be between -100 and 100"));
+    }
+
     let img = bytes_to_image(data)?;
     let brightened = img.brighten(value);
 
@@ -119,6 +127,10 @@ pub fn brighten(data: &[u8], value: i32) -> Result<Vec<u8>, JsValue> {
 #[wasm_bindgen]
 pub fn adjust_contrast(data: &[u8], contrast: f32) -> Result<Vec<u8>, JsValue> {
     log(&format!("Processing: Contrast adjustment by {}", contrast));
+
+    if contrast < -100.0 || contrast > 100.0 {
+        return Err(JsValue::from_str("Contrast value must be between -100 and 100"));
+    }
 
     let img = bytes_to_image(data)?;
     let adjusted = img.adjust_contrast(contrast);
