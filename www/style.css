@@ -362,7 +362,7 @@ canvas {
 
 /* Crop Selection Overlay */
 .crop-overlay {
-    cursor: crosshair;
+    cursor: grab;
     z-index: 100;
     border-radius: 0.5rem;
     display: block;

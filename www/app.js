@@ -583,7 +583,7 @@ function enterCropMode() {
   cropInstructions.style.display = "block";
 
   createCropOverlay();
-  originalCanvas.style.cursor = "crosshair";
+  originalCanvas.style.cursor = "grab";
 
   // Calculate default centered square selection (maximum size = 100% of smaller dimension)
   const canvasWidth = originalCanvas.width;
@@ -764,6 +764,7 @@ originalCanvas.addEventListener("mousemove", (e) => {
 
   if (!isDragging) {
     isDragging = true;
+    originalCanvas.style.cursor = "grabbing";
   }
 
   // Calculate new position based on drag direction
@@ -799,6 +800,9 @@ originalCanvas.addEventListener("mouseup", () => {
   dragStartX = null;
   dragStartY = null;
   isDragging = false;
+
+  // Reset cursor back to grab when drag ends
+  originalCanvas.style.cursor = "grab";
 });
 
 originalCanvas.addEventListener("mouseleave", () => {
@@ -807,6 +811,9 @@ originalCanvas.addEventListener("mouseleave", () => {
     dragStartX = null;
     dragStartY = null;
     isDragging = false;
+
+    // Reset cursor back to grab
+    originalCanvas.style.cursor = "grab";
   }
 });
 
