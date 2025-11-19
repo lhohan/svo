@@ -383,11 +383,14 @@ async function resetImage() {
   pendingCropParams = null;
 
   // Redisplay both canvases with uploaded image
-  displayImage(uploadedImageData, originalCanvas, originalInfo);
-  displayImage(uploadedImageData, processedCanvas, processedInfo);
-
-  // Check if image is square-ish and re-show crop mode if needed
+  // Wait for both images to finish loading before proceeding
   try {
+    await Promise.all([
+      displayImage(uploadedImageData, originalCanvas, originalInfo),
+      displayImage(uploadedImageData, processedCanvas, processedInfo),
+    ]);
+
+    // Check if image is square-ish and re-show crop mode if needed
     const isSquare = await wasmModule.is_square_ish(uploadedImageData);
     if (!isSquare) {
       // Re-show crop mode for non-square images
