@@ -1,6 +1,6 @@
-use wasm_bindgen::prelude::*;
-use image::{ImageBuffer, Rgba, ImageFormat, DynamicImage, GenericImageView};
+use image::{DynamicImage, GenericImageView, ImageBuffer, ImageFormat, Rgba};
 use std::io::Cursor;
+use wasm_bindgen::prelude::*;
 
 /// Initialize panic hook for better error messages in the browser console
 #[wasm_bindgen(start)]
@@ -256,7 +256,10 @@ pub fn flipv(data: &[u8]) -> Result<Vec<u8>, JsValue> {
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_top_bottom(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_top_bottom(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (top/bottom split)");
 
     // Load both images
@@ -307,7 +310,10 @@ pub fn combine_top_bottom(user_img_data: &[u8], overlay_img_data: &[u8]) -> Resu
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_left_right(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_left_right(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (left/right split)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -347,7 +353,10 @@ pub fn combine_left_right(user_img_data: &[u8], overlay_img_data: &[u8]) -> Resu
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_diagonal_tl_br(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_diagonal_tl_br(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (diagonal top-left to bottom-right)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -389,7 +398,10 @@ pub fn combine_diagonal_tl_br(user_img_data: &[u8], overlay_img_data: &[u8]) -> 
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_diagonal_tr_bl(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_diagonal_tr_bl(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (diagonal top-right to bottom-left)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -431,7 +443,10 @@ pub fn combine_diagonal_tr_bl(user_img_data: &[u8], overlay_img_data: &[u8]) -> 
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_filter_top(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_filter_top(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (filter on top ↑)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -476,7 +491,10 @@ pub fn combine_filter_top(user_img_data: &[u8], overlay_img_data: &[u8]) -> Resu
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_filter_bottom(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_filter_bottom(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (filter on bottom ↓)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -521,7 +539,10 @@ pub fn combine_filter_bottom(user_img_data: &[u8], overlay_img_data: &[u8]) -> R
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_filter_left(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_filter_left(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (filter on left ←)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -561,7 +582,10 @@ pub fn combine_filter_left(user_img_data: &[u8], overlay_img_data: &[u8]) -> Res
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
 #[wasm_bindgen]
-pub fn combine_filter_right(user_img_data: &[u8], overlay_img_data: &[u8]) -> Result<Vec<u8>, JsValue> {
+pub fn combine_filter_right(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+) -> Result<Vec<u8>, JsValue> {
     log("Processing: Combine images (filter on right →)");
 
     let user_img = bytes_to_image(user_img_data)?;
@@ -606,6 +630,33 @@ pub fn get_dimensions(data: &[u8]) -> Result<Vec<u32>, JsValue> {
     Ok(vec![width, height])
 }
 
+/// Check if an image is square-ish (within 2% tolerance)
+///
+/// # Arguments
+/// * `data` - Raw image bytes (PNG, JPEG, or WebP)
+///
+/// # Returns
+/// * `Result<bool, JsValue>` - true if image is approximately square, false otherwise
+#[wasm_bindgen]
+pub fn is_square_ish(data: &[u8]) -> Result<bool, JsValue> {
+    let img = bytes_to_image(data)?;
+    let (width, height) = img.dimensions();
+
+    // Calculate aspect ratio
+    let ratio = (width as f32) / (height as f32);
+
+    // 2% tolerance
+    let tolerance = 0.02;
+    let is_square = ratio >= (1.0 - tolerance) && ratio <= (1.0 + tolerance);
+
+    log(&format!(
+        "Image dimensions: {}x{}, ratio: {:.4}, is_square_ish: {}",
+        width, height, ratio, is_square
+    ));
+
+    Ok(is_square)
+}
+
 /// Crop an image to a square region
 ///
 /// # Arguments
@@ -618,7 +669,10 @@ pub fn get_dimensions(data: &[u8]) -> Result<Vec<u32>, JsValue> {
 /// * `Result<Vec<u8>, JsValue>` - Cropped image as PNG bytes or error
 #[wasm_bindgen]
 pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, JsValue> {
-    log(&format!("Processing: Crop square at ({}, {}) size {}", x, y, size));
+    log(&format!(
+        "Processing: Crop square at ({}, {}) size {}",
+        x, y, size
+    ));
 
     let img = bytes_to_image(data)?;
     let (width, height) = img.dimensions();
