@@ -44,9 +44,13 @@
                             accept="image/png,image/jpeg,image/jpg,image/webp"
                             hidden
                         />
-                        <button class="btn btn-primary" id="selectFileBtn">
+                        <label
+                            for="fileInput"
+                            class="btn btn-primary"
+                            id="selectFileBtn"
+                        >
                             Select File
-                        </button>
+                        </label>
                     </div>
                 </section>
 
@@ -95,7 +99,9 @@
                                 data-filter="combine_filter_bottom"
                             >
                                 Split ↓
-                                <span class="recommended-badge">Recommended</span>
+                                <span class="recommended-badge"
+                                    >Recommended</span
+                                >
                             </button>
                             <button
                                 class="btn btn-filter"
@@ -186,19 +192,9 @@
             </main>
 
             <footer>
-                <p>
-                    Built with
-                    <a href="https://www.rust-lang.org/" target="_blank"
-                        >Rust</a
-                    >
-                    and
-                    <a href="https://webassembly.org/" target="_blank"
-                        >WebAssembly</a
-                    >
-                </p>
                 <p class="tech-info">
                     Supported formats: PNG, JPEG, WebP • All processing happens
-                    in your browser
+                    in your browser.
                 </p>
             </footer>
         </div>

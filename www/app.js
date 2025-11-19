@@ -561,9 +561,7 @@ function cancelCrop() {
 
 // Event Listeners
 
-// File input
-selectFileBtn.addEventListener('click', () => fileInput.click());
-
+// File input change handler (label triggers file picker via HTML)
 fileInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
         handleFileSelect(e.target.files[0]);
@@ -571,7 +569,13 @@ fileInput.addEventListener('change', (e) => {
 });
 
 // Drag and drop
-uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('click', (e) => {
+    // Avoid double-triggering when clicking the label (it already triggers file input via for attribute)
+    if (e.target.id === 'selectFileBtn' || e.target.closest('#selectFileBtn')) {
+        return;
+    }
+    fileInput.click();
+});
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
