@@ -23,12 +23,18 @@ This is a **client-side image processing web application** built with Rust and W
 │   ├── index.html          # Main UI
 │   ├── style.css           # Styling
 │   └── app.js              # JS integration with WASM
+├── docs/
+│   └── decision-log.md     # Architectural decisions (Y-statements)
 ├── pkg/                    # Generated WASM output (gitignored)
 │   ├── *.wasm              # Compiled WebAssembly binary
 │   └── *.js                # JS bindings
 ├── Cargo.toml              # Rust configuration
 └── README.md               # User-facing documentation
 ```
+
+## Architectural Decision Log
+
+See [docs/decision-log.md](docs/decision-log.md) for a comprehensive record of architectural decisions made during development. Decisions are documented as Y-statements, capturing context, concerns, chosen approach, alternatives, intended benefits, trade-offs, and reasoning.
 
 ## Key Implementation Details
 
