@@ -42,8 +42,7 @@ const errorMessage = document.getElementById("errorMessage");
 const resetBtn = document.getElementById("resetBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
-// Crop buttons and UI
-const applyCropBtn = document.getElementById("applyCropBtn");
+// Crop UI
 const cropInstructions = document.getElementById("cropInstructions");
 
 /**
@@ -176,7 +175,6 @@ function handleFileSelect(file) {
           cropOverlayCanvas.remove();
           cropOverlayCanvas = null;
         }
-        applyCropBtn.style.display = "none";
       }
     } catch (error) {
       console.error("Error loading image or checking if square:", error);
@@ -418,7 +416,6 @@ async function resetImage() {
         cropOverlayCanvas.remove();
         cropOverlayCanvas = null;
       }
-      applyCropBtn.style.display = "none";
     }
   } catch (error) {
     console.error("Error checking if image is square:", error);
@@ -595,7 +592,6 @@ function updateCropPreview() {
  */
 function enterCropMode() {
   cropMode = true;
-  applyCropBtn.style.display = "inline-block";
   cropInstructions.style.display = "block";
 
   createCropOverlay();
@@ -632,7 +628,6 @@ function enterCropMode() {
  */
 function exitCropMode() {
   cropMode = false;
-  applyCropBtn.style.display = "none";
   cropInstructions.style.display = "none";
   originalCanvas.style.cursor = "default";
 
@@ -651,47 +646,6 @@ function exitCropMode() {
   dragStartY = null;
 }
 
-/**
- * Apply crop
- */
-async function applyCrop() {
-  if (!pendingCropParams) {
-    showError("No crop selection active");
-    return;
-  }
-
-  try {
-    showLoading(true);
-
-    // Small delay to allow UI to update
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    // Crop from original image
-    const croppedData = wasmModule.crop_square(
-      originalImageData,
-      pendingCropParams.x,
-      pendingCropParams.y,
-      pendingCropParams.size,
-    );
-
-    // Update both original and current to the cropped version
-    originalImageData = croppedData;
-    currentImageData = croppedData;
-
-    // Display the cropped image on both canvases
-    displayImage(croppedData, originalCanvas, originalInfo);
-    displayImage(croppedData, processedCanvas, processedInfo);
-
-    pendingCropParams = null;
-    exitCropMode();
-
-    showLoading(false);
-  } catch (error) {
-    showError("Crop failed: " + error.message);
-    showLoading(false);
-    console.error("Crop error:", error);
-  }
-}
 
 // Event Listeners
 
@@ -749,9 +703,6 @@ document.querySelectorAll(".btn-filter").forEach((btn) => {
 // Action buttons
 resetBtn.addEventListener("click", resetImage);
 downloadBtn.addEventListener("click", downloadImage);
-
-// Crop buttons
-applyCropBtn.addEventListener("click", applyCrop);
 
 // Canvas mouse events for crop selection (on original canvas)
 originalCanvas.addEventListener("mousedown", (e) => {
