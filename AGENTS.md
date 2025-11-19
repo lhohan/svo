@@ -1,4 +1,4 @@
-# Claude.md - AI Assistant Guide
+# AI Assistant Guide
 
 This file contains important context and instructions for AI assistants working with this codebase.
 
@@ -263,9 +263,7 @@ When making changes, test:
 - [ ] Error handling works (try invalid file)
 - [ ] Responsive design (test mobile view)
 
-## Git Workflow
-
-**Branch:** `claude/rust-wasm-image-processor-01GKBs4At4ZQxCopaAT7RBvf`
+## VCS Workflow
 
 **Files to commit:**
 - Source files: `src/`, `www/`, `Cargo.toml`, `README.md`
