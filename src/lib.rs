@@ -500,6 +500,81 @@ pub fn is_square_ish(data: &[u8]) -> Result<bool, JsValue> {
     Ok(is_square)
 }
 
+/// Create a transparent overlay of the overlay image on top of the user image
+/// Uses alpha blending to composite the overlay with adjustable opacity
+///
+/// # Arguments
+/// * `user_img_data` - Raw image bytes for the base image (PNG, JPEG, or WebP)
+/// * `overlay_img_data` - Raw image bytes for the overlay image (PNG, JPEG, or WebP)
+/// * `opacity` - Opacity of the overlay layer (0.0 = fully transparent, 1.0 = fully opaque)
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Composited image as PNG bytes or error
+#[wasm_bindgen]
+pub fn overlay_transparent(
+    user_img_data: &[u8],
+    overlay_img_data: &[u8],
+    opacity: f32,
+) -> Result<Vec<u8>, JsValue> {
+    log(&format!("Processing: Transparent overlay with opacity {}", opacity));
+
+    // Validate opacity range
+    if opacity < 0.0 || opacity > 1.0 {
+        return Err(JsValue::from_str(
+            "Opacity must be between 0.0 and 1.0",
+        ));
+    }
+
+    // Load both images
+    let user_img = bytes_to_image(user_img_data)?;
+    let mut overlay_img = bytes_to_image(overlay_img_data)?;
+
+    let (width, height) = user_img.dimensions();
+
+    // Resize overlay image to match user image dimensions
+    overlay_img = overlay_img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+
+    // Convert both to RGBA for pixel manipulation
+    let user_rgba = user_img.to_rgba8();
+    let overlay_rgba = overlay_img.to_rgba8();
+
+    // Create output buffer
+    let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+    // Iterate through all pixels and blend them
+    for y in 0..height {
+        for x in 0..width {
+            let user_pixel = user_rgba.get_pixel(x, y);
+            let overlay_pixel = overlay_rgba.get_pixel(x, y);
+
+            // Extract color components
+            let ur = user_pixel[0] as f32;
+            let ug = user_pixel[1] as f32;
+            let ub = user_pixel[2] as f32;
+            let ua = user_pixel[3] as f32;
+
+            let or = overlay_pixel[0] as f32;
+            let og = overlay_pixel[1] as f32;
+            let ob = overlay_pixel[2] as f32;
+            let oa = overlay_pixel[3] as f32;
+
+            // Alpha blending: output = overlay * overlay_opacity + user * (1 - overlay_opacity)
+            // Blend each color channel
+            let blended_r = (or * opacity + ur * (1.0 - opacity)).min(255.0) as u8;
+            let blended_g = (og * opacity + ug * (1.0 - opacity)).min(255.0) as u8;
+            let blended_b = (ob * opacity + ub * (1.0 - opacity)).min(255.0) as u8;
+
+            // For alpha: use overlay's alpha with opacity applied, otherwise preserve user's alpha
+            let blended_a = ((oa * opacity) + (ua * (1.0 - opacity))).min(255.0) as u8;
+
+            output.put_pixel(x, y, Rgba([blended_r, blended_g, blended_b, blended_a]));
+        }
+    }
+
+    let result_img = DynamicImage::ImageRgba8(output);
+    image_to_bytes(&result_img, ImageFormat::Png)
+}
+
 /// Crop an image to a square region
 ///
 /// # Arguments

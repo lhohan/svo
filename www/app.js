@@ -367,6 +367,21 @@ async function applyFilter(filterName, ...args) {
           overlayImageData,
         );
         break;
+      case "overlay_transparent":
+        if (!overlayImageData) {
+          throw new Error(
+            "Overlay image not loaded. Please ensure lightning.png is available.",
+          );
+        }
+        const opacitySlider = document.getElementById("opacitySlider");
+        const opacityPercent = parseFloat(opacitySlider.value);
+        const opacity = opacityPercent / 100.0;
+        result = wasmModule.overlay_transparent(
+          originalImageData,
+          overlayImageData,
+          opacity,
+        );
+        break;
       default:
         throw new Error("Unknown filter: " + filterName);
     }
@@ -703,6 +718,15 @@ document.querySelectorAll(".btn-filter").forEach((btn) => {
 // Action buttons
 resetBtn.addEventListener("click", resetImage);
 downloadBtn.addEventListener("click", downloadImage);
+
+// Opacity slider
+const opacitySlider = document.getElementById("opacitySlider");
+const opacityValue = document.getElementById("opacityValue");
+if (opacitySlider && opacityValue) {
+  opacitySlider.addEventListener("input", function () {
+    opacityValue.textContent = this.value;
+  });
+}
 
 // Canvas mouse events for crop selection (on original canvas)
 originalCanvas.addEventListener("mousedown", (e) => {
