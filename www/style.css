@@ -456,6 +456,13 @@ footer a:hover {
     font-size: 0.9rem;
 }
 
+.version-info {
+    font-size: 0.8rem;
+    color: #999;
+    font-family: monospace;
+    margin-top: 0.5rem;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .controls-grid {

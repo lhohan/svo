@@ -1,6 +1,9 @@
 // Import the WebAssembly module
 import init, * as wasm from "./pkg/image_processor_wasm.js";
 
+// Import version information
+import { VERSION, COMMIT_HASH } from "./version.js";
+
 // Global state
 let wasmModule = null;
 let uploadedImageData = null;
@@ -64,6 +67,16 @@ async function loadOverlayImage() {
 }
 
 /**
+ * Display version information in the footer
+ */
+function displayVersion() {
+  const versionElement = document.getElementById("versionInfo");
+  if (versionElement) {
+    versionElement.textContent = `v${VERSION} (${COMMIT_HASH})`;
+  }
+}
+
+/**
  * Initialize the WebAssembly module
  */
 async function initWasm() {
@@ -84,6 +97,9 @@ async function initWasm() {
 
     // Load overlay image
     await loadOverlayImage();
+
+    // Display version information
+    displayVersion();
 
     showLoading(false);
   } catch (error) {

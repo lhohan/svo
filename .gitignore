@@ -8,6 +8,9 @@
 /www/pkg/
 wasm-pack.log
 
+# Generated version file
+/www/version.js
+
 # Cargo lock file (uncomment if this is a library)
 # Cargo.lock
 
