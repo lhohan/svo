@@ -135,15 +135,19 @@ function handleFileSelect(file) {
     uploadedImageData = new Uint8Array(e.target.result);
     originalImageData = uploadedImageData;
     currentImageData = uploadedImageData;
-    displayImage(uploadedImageData, originalCanvas, originalInfo);
-    displayImage(uploadedImageData, processedCanvas, processedInfo);
 
     // Show controls and images
     controlsSection.style.display = "block";
     imagesSection.style.display = "grid";
 
-    // Check if image is square-ish
+    // Wait for both images to finish loading before proceeding
     try {
+      await Promise.all([
+        displayImage(uploadedImageData, originalCanvas, originalInfo),
+        displayImage(uploadedImageData, processedCanvas, processedInfo),
+      ]);
+
+      // Check if image is square-ish
       const isSquare = await wasmModule.is_square_ish(uploadedImageData);
       if (!isSquare) {
         // Auto-show crop mode for non-square images
@@ -159,7 +163,7 @@ function handleFileSelect(file) {
         applyCropBtn.style.display = "none";
       }
     } catch (error) {
-      console.error("Error checking if image is square:", error);
+      console.error("Error loading image or checking if square:", error);
       // Default to showing crop mode if check fails
       enterCropMode();
     }
@@ -177,35 +181,42 @@ function handleFileSelect(file) {
 
 /**
  * Display image on canvas
+ * Returns a Promise that resolves when the image finishes loading
  */
 function displayImage(imageData, canvas, infoElement) {
-  const blob = new Blob([imageData], { type: "image/png" });
-  const url = URL.createObjectURL(blob);
-  const img = new Image();
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([imageData], { type: "image/png" });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
 
-  img.onload = function () {
-    // Set canvas size to match image
-    canvas.width = img.width;
-    canvas.height = img.height;
+    img.onload = function () {
+      // Set canvas size to match image
+      canvas.width = img.width;
+      canvas.height = img.height;
 
-    // Draw image on canvas
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
+      // Draw image on canvas
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
 
-    // Update info
-    const sizeKB = (imageData.length / 1024).toFixed(2);
-    infoElement.textContent = `${img.width} × ${img.height} px • ${sizeKB} KB`;
+      // Update info
+      const sizeKB = (imageData.length / 1024).toFixed(2);
+      infoElement.textContent = `${img.width} × ${img.height} px • ${sizeKB} KB`;
 
-    // Clean up
-    URL.revokeObjectURL(url);
-  };
+      // Clean up
+      URL.revokeObjectURL(url);
 
-  img.onerror = function () {
-    showError("Failed to load image");
-    URL.revokeObjectURL(url);
-  };
+      // Resolve promise
+      resolve();
+    };
 
-  img.src = url;
+    img.onerror = function () {
+      showError("Failed to load image");
+      URL.revokeObjectURL(url);
+      reject(new Error("Failed to load image"));
+    };
+
+    img.src = url;
+  });
 }
 
 /**
