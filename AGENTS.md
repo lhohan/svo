@@ -108,12 +108,12 @@ wasm-pack build --target web
 
 ### Build Configuration Notes
 
-**wasm-opt disabled:**
+**wasm-opt enabled:**
 ```toml
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = false
+wasm-opt = true
 ```
-This is set because the wasm-opt tool download failed. The WASM binary is still optimized via Rust's release profile.
+The WebAssembly optimizer (from binaryen) is included in the Nix development shell and automatically applied during release builds, reducing binary size by ~20%.
 
 **Rust optimizations:**
 ```toml

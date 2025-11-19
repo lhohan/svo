@@ -13,6 +13,7 @@
       buildInputs = with pkgs; [
         rustup
         wasm-pack
+        binaryen
         simple-http-server
         just
       ];
