@@ -7,6 +7,12 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <noscript>
+            <div style="padding: 2rem; text-align: center; background: #fee2e2; color: #991b1b; margin: 1rem;">
+                <h2>JavaScript Required</h2>
+                <p>This application requires JavaScript and WebAssembly to function. Please enable JavaScript in your browser settings.</p>
+            </div>
+        </noscript>
         <div class="container">
             <header>
                 <h1>🎨 Image Processor</h1>
@@ -17,8 +23,8 @@
 
             <main>
                 <!-- File Upload Section -->
-                <section class="upload-section">
-                    <div class="upload-area" id="uploadArea">
+                <section class="upload-section" aria-label="Image upload">
+                    <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="Click or drag and drop to upload an image file. Supported formats: PNG, JPEG, WebP">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="64"
@@ -29,7 +35,9 @@
                             stroke-width="2"
                             stroke-linecap="round"
                             stroke-linejoin="round"
+                            aria-hidden="true"
                         >
+                            <title>Upload icon</title>
                             <path
                                 d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
                             ></path>
@@ -43,6 +51,7 @@
                             id="fileInput"
                             accept="image/png,image/jpeg,image/jpg,image/webp"
                             hidden
+                            aria-label="Select image file"
                         />
                         <label
                             for="fileInput"
@@ -59,6 +68,7 @@
                     class="controls-section"
                     id="controlsSection"
                     style="display: none"
+                    aria-label="Image processing controls"
                 >
                     <h2>Image Processing Operations</h2>
 
@@ -161,34 +171,35 @@
                     class="images-section"
                     id="imagesSection"
                     style="display: none"
+                    aria-label="Image comparison"
                 >
                     <div class="image-container">
                         <h3>Original Image</h3>
                         <div class="image-wrapper">
-                            <canvas id="originalCanvas"></canvas>
+                            <canvas id="originalCanvas" role="img" aria-label="Original uploaded image"></canvas>
                             <div class="image-info" id="originalInfo"></div>
                         </div>
                     </div>
 
-                    <div class="arrow">→</div>
+                    <div class="arrow" aria-hidden="true">→</div>
 
                     <div class="image-container">
                         <h3>Processed Image</h3>
                         <div class="image-wrapper">
-                            <canvas id="processedCanvas"></canvas>
+                            <canvas id="processedCanvas" role="img" aria-label="Processed image with applied filters"></canvas>
                             <div class="image-info" id="processedInfo"></div>
                         </div>
                     </div>
                 </section>
 
                 <!-- Loading Spinner -->
-                <div class="loading-overlay" id="loadingOverlay">
-                    <div class="spinner"></div>
+                <div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
+                    <div class="spinner" aria-hidden="true"></div>
                     <p>Processing image...</p>
                 </div>
 
                 <!-- Error Message -->
-                <div class="error-message" id="errorMessage"></div>
+                <div class="error-message" id="errorMessage" role="alert" aria-live="assertive"></div>
             </main>
 
             <footer>
