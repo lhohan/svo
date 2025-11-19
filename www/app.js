@@ -469,29 +469,32 @@ function createCropOverlay() {
   cropOverlayCanvas.style.width = originalCanvas.offsetWidth + "px";
   cropOverlayCanvas.style.height = originalCanvas.offsetHeight + "px";
 
-  // Position relatively within the image wrapper
-  // Calculate offset to account for canvas centering (margin: 0 auto)
-  const canvasRect = originalCanvas.getBoundingClientRect();
-  const wrapperRect = imageWrapper.getBoundingClientRect();
-
-  const leftOffset = canvasRect.left - wrapperRect.left;
-  const topOffset = canvasRect.top - wrapperRect.top;
-
-  cropOverlayCanvas.style.position = "absolute";
-  cropOverlayCanvas.style.left = leftOffset + "px";
-  cropOverlayCanvas.style.top = topOffset + "px";
-  cropOverlayCanvas.style.pointerEvents = "none";
-
   // Append to image wrapper (which should have position: relative)
   imageWrapper.style.position = "relative";
   imageWrapper.appendChild(cropOverlayCanvas);
+
+  // Position after next paint to ensure layout is settled
+  // This fixes Safari timing issues with getBoundingClientRect()
+  requestAnimationFrame(() => {
+    const canvasRect = originalCanvas.getBoundingClientRect();
+    const wrapperRect = imageWrapper.getBoundingClientRect();
+
+    const leftOffset = canvasRect.left - wrapperRect.left;
+    const topOffset = canvasRect.top - wrapperRect.top;
+
+    cropOverlayCanvas.style.position = "absolute";
+    cropOverlayCanvas.style.left = leftOffset + "px";
+    cropOverlayCanvas.style.top = topOffset + "px";
+  });
+
+  cropOverlayCanvas.style.pointerEvents = "none";
 }
 
 /**
  * Draw crop selection rectangle
  */
 function drawCropSelection() {
-  if (!cropOverlayCanvas || cropStartX === null) return;
+  if (!cropOverlayCanvas || !pendingCropParams) return;
 
   const ctx = cropOverlayCanvas.getContext("2d");
   const width = cropOverlayCanvas.width;
