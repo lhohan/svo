@@ -22,7 +22,7 @@ fn bytes_to_image(data: &[u8]) -> Result<DynamicImage, JsValue> {
         .map_err(|e| JsValue::from_str(&format!("Failed to load image: {}", e)))
 }
 
-/// Convert DynamicImage to PNG bytes
+/// Convert DynamicImage to bytes with specified format
 /// Returns Result to handle encoding errors
 fn image_to_bytes(img: &DynamicImage, format: ImageFormat) -> Result<Vec<u8>, JsValue> {
     let mut buf = Vec::new();
@@ -36,7 +36,7 @@ fn image_to_bytes(img: &DynamicImage, format: ImageFormat) -> Result<Vec<u8>, Js
 
 
 /// Helper function to combine two images using a custom pixel selection strategy
-/// Encapsulates boilerplate: loading, resizing, RGBA conversion, and encoding
+/// Uses RGB for opaque images (smaller file size) and RGBA only when transparency is needed
 ///
 /// # Arguments
 /// * `user_img_data` - Raw image bytes for the main image
@@ -46,7 +46,7 @@ fn image_to_bytes(img: &DynamicImage, format: ImageFormat) -> Result<Vec<u8>, Js
 ///   - Returns: true to use user pixel, false to use overlay pixel
 ///
 /// # Returns
-/// * `Result<Vec<u8>, JsValue>` - Combined image as PNG bytes or error
+/// * `Result<Vec<u8>, JsValue>` - Combined image as bytes (JPEG if both inputs are JPEG, PNG otherwise)
 fn combine_images_with_selector<F>(
     user_img_data: &[u8],
     overlay_img_data: &[u8],
@@ -64,27 +64,65 @@ where
     // Resize overlay image to match user image dimensions
     overlay_img = overlay_img.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
 
-    // Convert both to RGBA for pixel manipulation
-    let user_rgba = user_img.to_rgba8();
-    let overlay_rgba = overlay_img.to_rgba8();
+    // Detect input formats
+    let user_format = detect_image_format(user_img_data);
+    let overlay_format = detect_image_format(overlay_img_data);
 
-    // Create output buffer
-    let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+    // Determine output format: JPEG only if both inputs are JPEG, otherwise PNG
+    let output_format = if user_format == ImageFormat::Jpeg && overlay_format == ImageFormat::Jpeg {
+        ImageFormat::Jpeg
+    } else {
+        ImageFormat::Png
+    };
 
-    // Iterate through all pixels and apply the selection strategy
-    for y in 0..height {
-        for x in 0..width {
-            let pixel = if selector(x, y, width, height) {
-                user_rgba.get_pixel(x, y)
-            } else {
-                overlay_rgba.get_pixel(x, y)
-            };
-            output.put_pixel(x, y, *pixel);
+    // For JPEG output, use RGB (no alpha needed). For PNG, use RGBA.
+    let use_rgba = output_format == ImageFormat::Png;
+
+    if use_rgba {
+        // Convert both to RGBA for pixel manipulation
+        let user_rgba = user_img.to_rgba8();
+        let overlay_rgba = overlay_img.to_rgba8();
+
+        // Create RGBA output buffer
+        let mut output: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+        // Iterate through all pixels and apply the selection strategy
+        for y in 0..height {
+            for x in 0..width {
+                let pixel = if selector(x, y, width, height) {
+                    user_rgba.get_pixel(x, y)
+                } else {
+                    overlay_rgba.get_pixel(x, y)
+                };
+                output.put_pixel(x, y, *pixel);
+            }
         }
-    }
 
-    let combined_img = DynamicImage::ImageRgba8(output);
-    image_to_bytes(&combined_img, ImageFormat::Png)
+        let combined_img = DynamicImage::ImageRgba8(output);
+        image_to_bytes(&combined_img, output_format)
+    } else {
+        // Convert both to RGB for smaller file size (no alpha channel needed)
+        let user_rgb = user_img.to_rgb8();
+        let overlay_rgb = overlay_img.to_rgb8();
+
+        // Create RGB output buffer
+        let mut output: ImageBuffer<image::Rgb<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+        // Iterate through all pixels and apply the selection strategy
+        for y in 0..height {
+            for x in 0..width {
+                let pixel = if selector(x, y, width, height) {
+                    user_rgb.get_pixel(x, y)
+                } else {
+                    overlay_rgb.get_pixel(x, y)
+                };
+                output.put_pixel(x, y, *pixel);
+            }
+        }
+
+        let combined_img = DynamicImage::ImageRgb8(output);
+        image_to_bytes(&combined_img, output_format)
+    }
 }
 
 
@@ -339,7 +377,29 @@ pub fn overlay_transparent(
     image_to_bytes(&result_img, ImageFormat::Png)
 }
 
-/// Crop an image to a square region
+/// Detect the format of image bytes (JPEG, PNG, or WebP)
+/// Returns the detected ImageFormat or defaults to PNG
+fn detect_image_format(data: &[u8]) -> ImageFormat {
+    // PNG magic bytes: 89 50 4E 47
+    if data.len() >= 4 && data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47 {
+        return ImageFormat::Png;
+    }
+
+    // JPEG magic bytes: FF D8 FF
+    if data.len() >= 3 && data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF {
+        return ImageFormat::Jpeg;
+    }
+
+    // WebP magic bytes: RIFF ... WEBP
+    if data.len() >= 12 && &data[0..4] == b"RIFF" && &data[8..12] == b"WEBP" {
+        return ImageFormat::WebP;
+    }
+
+    // Default to PNG
+    ImageFormat::Png
+}
+
+/// Crop an image to a square region, preserving the original format
 ///
 /// # Arguments
 /// * `data` - Raw image bytes (PNG, JPEG, or WebP)
@@ -348,7 +408,7 @@ pub fn overlay_transparent(
 /// * `size` - Width and height of the square crop area in pixels
 ///
 /// # Returns
-/// * `Result<Vec<u8>, JsValue>` - Cropped image as PNG bytes or error
+/// * `Result<Vec<u8>, JsValue>` - Cropped image in original format or error
 #[wasm_bindgen]
 pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, JsValue> {
     log(&format!(
@@ -376,5 +436,7 @@ pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, Js
     // Crop the image to the specified square region
     let cropped = img.crop_imm(x, y, size, size);
 
-    image_to_bytes(&cropped, ImageFormat::Png)
+    // Preserve the original image format
+    let output_format = detect_image_format(data);
+    image_to_bytes(&cropped, output_format)
 }
