@@ -268,42 +268,6 @@ async function applyFilter(filterName, ...args) {
 
     // Call the appropriate WASM function
     switch (filterName) {
-      case "grayscale":
-        result = wasmModule.grayscale(imageToFilter);
-        break;
-      case "invert":
-        result = wasmModule.invert(imageToFilter);
-        break;
-      case "blur":
-        const sigma = parseFloat(args[0]);
-        result = wasmModule.blur(imageToFilter, sigma);
-        break;
-      case "brighten":
-        const brightness = parseInt(args[0]);
-        result = wasmModule.brighten(imageToFilter, brightness);
-        break;
-      case "adjust_contrast":
-        const contrast = parseFloat(args[0]);
-        result = wasmModule.adjust_contrast(imageToFilter, contrast);
-        break;
-      case "sepia":
-        result = wasmModule.sepia(imageToFilter);
-        break;
-      case "rotate90":
-        result = wasmModule.rotate90(imageToFilter);
-        break;
-      case "rotate180":
-        result = wasmModule.rotate180(imageToFilter);
-        break;
-      case "rotate270":
-        result = wasmModule.rotate270(imageToFilter);
-        break;
-      case "fliph":
-        result = wasmModule.fliph(imageToFilter);
-        break;
-      case "flipv":
-        result = wasmModule.flipv(imageToFilter);
-        break;
       case "combine_filter_top":
         if (!overlayImageData) {
           throw new Error(
