@@ -373,6 +373,15 @@ async function applyFilter(filterName, ...args) {
             "Overlay image not loaded. Please ensure lightning.png is available.",
           );
         }
+
+        // ARCHITECTURAL NOTE: Overlay filter is intentionally non-cumulative (uses originalImageData)
+        // This is a functional requirement, not a style choice. Unlike transform filters (rotate, flip,
+        // crop, split) which accumulate changes, overlay is a non-destructive effect where:
+        // - The opacity slider controls the *absolute* effect level, not a delta
+        // - Clicking multiple times with the same slider position produces identical results
+        // - Users expect the slider to behave like layer opacity in Photoshop, not stack
+        // This matches user mental models and functional requirements for overlay effects.
+        // See docs/decision-log.md (Decision 003) for full architectural discussion.
         const opacitySlider = document.getElementById("opacitySlider");
         const opacityPercent = parseFloat(opacitySlider.value);
         const opacity = opacityPercent / 100.0;
