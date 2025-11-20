@@ -1,4 +1,5 @@
 use image::{DynamicImage, GenericImageView, ImageBuffer, ImageFormat, Rgba};
+use png::{Encoder, Compression, Filter};
 use std::io::Cursor;
 use wasm_bindgen::prelude::*;
 
@@ -442,7 +443,7 @@ pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, Js
 }
 
 /// Compress image data for download while preserving format and transparency
-/// For JPEG: reduces quality. For PNG: uses higher compression.
+/// For JPEG: reduces quality. For PNG: uses aggressive lossless compression.
 ///
 /// # Arguments
 /// * `data` - Raw image bytes (PNG, JPEG, or WebP)
@@ -474,9 +475,30 @@ pub fn compress_for_download(data: &[u8], quality: u8) -> Result<Vec<u8>, JsValu
 
             Ok(buf)
         }
+        ImageFormat::Png => {
+            // For PNG, use aggressive lossless compression
+            let rgba = img.to_rgba8();
+            let (width, height) = img.dimensions();
+            let mut buf = Vec::new();
+
+            {
+                let mut encoder = Encoder::new(&mut buf, width, height);
+                encoder.set_color(png::ColorType::Rgba);
+                encoder.set_depth(png::BitDepth::Eight);
+                encoder.set_compression(Compression::High);
+                encoder.set_filter(Filter::Adaptive);
+
+                let mut writer = encoder.write_header()
+                    .map_err(|e| JsValue::from_str(&format!("Failed to write PNG header: {}", e)))?;
+
+                writer.write_image_data(&rgba)
+                    .map_err(|e| JsValue::from_str(&format!("Failed to write PNG data: {}", e)))?;
+            }
+
+            Ok(buf)
+        }
         _ => {
-            // For PNG and other formats, keep original format to preserve transparency
-            // Just use the standard encoding (already optimized)
+            // For other formats, keep original format to preserve transparency
             image_to_bytes(&img, input_format)
         }
     }

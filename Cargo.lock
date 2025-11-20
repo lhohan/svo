@@ -105,6 +105,7 @@ dependencies = [
  "console_error_panic_hook",
  "image",
  "js-sys",
+ "png",
  "wasm-bindgen",
  "web-sys",
 ]
