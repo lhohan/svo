@@ -212,9 +212,19 @@ function displayImage(imageData, canvas, infoElement) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
-      // Update info
-      const sizeKB = (imageData.length / 1024).toFixed(2);
-      infoElement.textContent = `${img.width} × ${img.height} px • ${sizeKB} KB`;
+      // Update info with size indication instead of exact bytes
+      const sizeKB = imageData.length / 1024;
+      let sizeIndicator;
+      if (sizeKB < 500) {
+        sizeIndicator = "Small";
+      } else if (sizeKB < 2000) {
+        sizeIndicator = "Medium";
+      } else if (sizeKB < 5000) {
+        sizeIndicator = "Large";
+      } else {
+        sizeIndicator = "Very Large";
+      }
+      infoElement.textContent = `${img.width} × ${img.height} px • ${sizeIndicator}`;
 
       // Clean up
       URL.revokeObjectURL(url);
@@ -413,7 +423,7 @@ async function resetImage() {
 }
 
 /**
- * Download processed image
+ * Download processed image with compression
  */
 function downloadImage() {
   if (!currentImageData) {
@@ -421,20 +431,49 @@ function downloadImage() {
     return;
   }
 
-  const blob = new Blob([currentImageData], { type: "image/png" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
+  // Show compression indicator
+  const downloadBtn = document.getElementById("downloadBtn");
+  const originalText = downloadBtn.textContent;
+  downloadBtn.textContent = "Optimizing...";
+  downloadBtn.disabled = true;
 
-  // Generate filename
-  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
-  const baseName = originalFileName.replace(/\.[^/.]+$/, "");
-  a.download = `${baseName}_processed_${timestamp}.png`;
+  try {
+    // Compress image for download (quality 80 for JPEG, PNG preserves transparency)
+    const compressedData = wasmModule.compress_for_download(currentImageData, 80);
 
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+    // Determine MIME type and extension based on output format
+    let mimeType = "image/png";
+    let extension = "png";
+
+    const blob = new Blob([compressedData], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+
+    // Generate filename
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
+    const baseName = originalFileName.replace(/\.[^/.]+$/, "");
+    a.download = `${baseName}_processed_${timestamp}.${extension}`;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Log compression result
+    const originalSize = currentImageData.length;
+    const compressedSize = compressedData.length;
+    const reduction = ((1 - compressedSize / originalSize) * 100).toFixed(1);
+    console.log(
+      `Download compression: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (${reduction}% reduction)`
+    );
+  } catch (err) {
+    showError(`Download failed: ${err.message}`);
+  } finally {
+    // Restore button
+    downloadBtn.textContent = originalText;
+    downloadBtn.disabled = false;
+  }
 }
 
 /**

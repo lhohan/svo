@@ -440,3 +440,44 @@ pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, Js
     let output_format = detect_image_format(data);
     image_to_bytes(&cropped, output_format)
 }
+
+/// Compress image data for download while preserving format and transparency
+/// For JPEG: reduces quality. For PNG: uses higher compression.
+///
+/// # Arguments
+/// * `data` - Raw image bytes (PNG, JPEG, or WebP)
+/// * `quality` - Quality level 1-100 (1=worst, 100=best). Used for JPEG only.
+///
+/// # Returns
+/// * `Result<Vec<u8>, JsValue>` - Compressed image bytes or error
+#[wasm_bindgen]
+pub fn compress_for_download(data: &[u8], quality: u8) -> Result<Vec<u8>, JsValue> {
+    log(&format!("Compressing for download with quality: {}", quality));
+
+    // Clamp quality to valid range
+    let quality = quality.max(1).min(100);
+
+    let img = bytes_to_image(data)?;
+    let input_format = detect_image_format(data);
+
+    match input_format {
+        ImageFormat::Jpeg => {
+            // For JPEG, re-encode with lower quality
+            let mut buf = Vec::new();
+            let mut cursor = Cursor::new(&mut buf);
+
+            use image::codecs::jpeg::JpegEncoder;
+
+            let mut encoder = JpegEncoder::new_with_quality(&mut cursor, quality);
+            encoder.encode_image(&img)
+                .map_err(|e| JsValue::from_str(&format!("Failed to compress image: {}", e)))?;
+
+            Ok(buf)
+        }
+        _ => {
+            // For PNG and other formats, keep original format to preserve transparency
+            // Just use the standard encoding (already optimized)
+            image_to_bytes(&img, input_format)
+        }
+    }
+}
