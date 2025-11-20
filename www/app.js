@@ -212,19 +212,8 @@ function displayImage(imageData, canvas, infoElement) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
-      // Update info with size indication instead of exact bytes
-      const sizeKB = imageData.length / 1024;
-      let sizeIndicator;
-      if (sizeKB < 500) {
-        sizeIndicator = "Small";
-      } else if (sizeKB < 2000) {
-        sizeIndicator = "Medium";
-      } else if (sizeKB < 5000) {
-        sizeIndicator = "Large";
-      } else {
-        sizeIndicator = "Very Large";
-      }
-      infoElement.textContent = `${img.width} × ${img.height} px • ${sizeIndicator}`;
+      // Update info with just dimensions
+      infoElement.textContent = `${img.width} × ${img.height} px`;
 
       // Clean up
       URL.revokeObjectURL(url);
