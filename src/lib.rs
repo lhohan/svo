@@ -547,25 +547,39 @@ pub fn overlay_transparent(
             let user_pixel = user_rgba.get_pixel(x, y);
             let overlay_pixel = overlay_rgba.get_pixel(x, y);
 
-            // Extract color components
-            let ur = user_pixel[0] as f32;
-            let ug = user_pixel[1] as f32;
-            let ub = user_pixel[2] as f32;
-            let ua = user_pixel[3] as f32;
+            // Extract color components (normalized to [0.0, 1.0])
+            let ur_norm = user_pixel[0] as f32 / 255.0;
+            let ug_norm = user_pixel[1] as f32 / 255.0;
+            let ub_norm = user_pixel[2] as f32 / 255.0;
+            let ua_norm = user_pixel[3] as f32 / 255.0;
 
-            let or = overlay_pixel[0] as f32;
-            let og = overlay_pixel[1] as f32;
-            let ob = overlay_pixel[2] as f32;
-            let oa = overlay_pixel[3] as f32;
+            let or_norm = overlay_pixel[0] as f32 / 255.0;
+            let og_norm = overlay_pixel[1] as f32 / 255.0;
+            let ob_norm = overlay_pixel[2] as f32 / 255.0;
+            // Combine overlay's alpha with the opacity parameter
+            let oa_norm = (overlay_pixel[3] as f32 / 255.0) * opacity;
 
-            // Alpha blending: output = overlay * overlay_opacity + user * (1 - overlay_opacity)
-            // Blend each color channel
-            let blended_r = (or * opacity + ur * (1.0 - opacity)).min(255.0) as u8;
-            let blended_g = (og * opacity + ug * (1.0 - opacity)).min(255.0) as u8;
-            let blended_b = (ob * opacity + ub * (1.0 - opacity)).min(255.0) as u8;
+            // Porter-Duff "over" operator for proper alpha compositing
+            // alpha_out = alpha_overlay + alpha_base * (1 - alpha_overlay)
+            let alpha_out = oa_norm + ua_norm * (1.0 - oa_norm);
 
-            // For alpha: use overlay's alpha with opacity applied, otherwise preserve user's alpha
-            let blended_a = ((oa * opacity) + (ua * (1.0 - opacity))).min(255.0) as u8;
+            // Blend colors using Porter-Duff formula
+            let (r_out, g_out, b_out) = if alpha_out > 0.0 {
+                // color_out = (color_overlay * alpha_overlay + color_base * alpha_base * (1 - alpha_overlay)) / alpha_out
+                let r = (or_norm * oa_norm + ur_norm * ua_norm * (1.0 - oa_norm)) / alpha_out;
+                let g = (og_norm * oa_norm + ug_norm * ua_norm * (1.0 - oa_norm)) / alpha_out;
+                let b = (ob_norm * oa_norm + ub_norm * ua_norm * (1.0 - oa_norm)) / alpha_out;
+                (r, g, b)
+            } else {
+                // Fully transparent pixel
+                (0.0, 0.0, 0.0)
+            };
+
+            // Denormalize back to [0, 255] range
+            let blended_r = (r_out * 255.0).min(255.0).max(0.0) as u8;
+            let blended_g = (g_out * 255.0).min(255.0).max(0.0) as u8;
+            let blended_b = (b_out * 255.0).min(255.0).max(0.0) as u8;
+            let blended_a = (alpha_out * 255.0).min(255.0).max(0.0) as u8;
 
             output.put_pixel(x, y, Rgba([blended_r, blended_g, blended_b, blended_a]));
         }
