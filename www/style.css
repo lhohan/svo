@@ -67,9 +67,50 @@ main {
     position: relative;
 }
 
+.step-section {
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: #f9fdf7;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+.step-header {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.step-badge {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0cec91, #38bdf8);
+    color: #0f2f25;
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+}
+
+.step-header h2 {
+    margin-bottom: 0.25rem;
+}
+
+.step-body {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
 /* Upload Section */
 .upload-section {
-    margin-bottom: 2rem;
+    margin-bottom: 0;
 }
 
 .upload-area {
@@ -218,7 +259,7 @@ main {
 
 /* Controls Section */
 .controls-section {
-    margin-bottom: 2rem;
+    margin-bottom: 0;
     padding: 2rem;
     background: white;
     border-radius: 1rem;
@@ -360,7 +401,7 @@ main {
 
 /* Download Section */
 .download-section {
-    margin-top: 2rem;
+    margin-top: 0;
     padding: 2rem;
     background: white;
     border-radius: 1rem;
@@ -640,6 +681,21 @@ footer a:hover {
 }
 
 @media (max-width: 640px) {
+    .step-section {
+        padding: 1.25rem;
+    }
+
+    .step-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .step-badge {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.1rem;
+    }
+
     .cluster-grid-logo {
         grid-template-columns: 1fr;
     }

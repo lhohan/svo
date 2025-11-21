@@ -31,6 +31,8 @@ let isLandscape = false; // true if width > height
 const uploadArea = document.getElementById("uploadArea");
 const fileInput = document.getElementById("fileInput");
 const selectFileBtn = document.getElementById("selectFileBtn");
+const stepManipulateSection = document.getElementById("stepManipulate");
+const stepDownloadSection = document.getElementById("stepDownload");
 const controlsSection = document.getElementById("controlsSection");
 const imagesSection = document.getElementById("imagesSection");
 const downloadSection = document.getElementById("downloadSection");
@@ -154,8 +156,14 @@ function handleFileSelect(file) {
     currentImageData = uploadedImageData;
 
     // Show controls and images
+    if (stepManipulateSection) {
+      stepManipulateSection.style.display = "block";
+    }
     controlsSection.style.display = "block";
     imagesSection.style.display = "grid";
+    if (stepDownloadSection) {
+      stepDownloadSection.style.display = "block";
+    }
     downloadSection.style.display = "block";
     downloadOptions.style.display = "block";
 

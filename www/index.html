@@ -33,263 +33,293 @@
             </header>
 
             <main>
-                <!-- File Upload Section -->
-                <section class="upload-section" aria-label="Image upload">
-                    <div
-                        class="upload-area"
-                        id="uploadArea"
-                        role="button"
-                        tabindex="0"
-                        aria-label="Click or drag and drop to upload an image file. Supported formats: PNG, JPEG, WebP"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="64"
-                            height="64"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
-                        >
-                            <title>Upload icon</title>
-                            <path
-                                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                            ></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <h2>Choose an image</h2>
-                        <p>or drag and drop it here</p>
-                        <input
-                            type="file"
-                            id="fileInput"
-                            accept="image/png,image/jpeg,image/jpg,image/webp"
-                            hidden
-                            aria-label="Select image file"
-                        />
-                        <label
-                            for="fileInput"
-                            class="btn btn-primary"
-                            id="selectFileBtn"
-                        >
-                            Select File
-                        </label>
+                <section class="step-section" id="stepUpload" aria-label="Step 1: Upload image">
+                    <div class="step-header">
+                        <span class="step-badge" aria-hidden="true">1</span>
+                        <div>
+                            <h2>Upload your image</h2>
+                            <p>Choose a file to get started.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-body">
+                        <section class="upload-section" aria-label="Image upload">
+                            <div
+                                class="upload-area"
+                                id="uploadArea"
+                                role="button"
+                                tabindex="0"
+                                aria-label="Click or drag and drop to upload an image file. Supported formats: PNG, JPEG, WebP"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="64"
+                                    height="64"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <title>Upload icon</title>
+                                    <path
+                                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                    ></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <h3>Choose an image</h3>
+                                <p>or drag and drop it here</p>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                                    hidden
+                                    aria-label="Select image file"
+                                />
+                                <label
+                                    for="fileInput"
+                                    class="btn btn-primary"
+                                    id="selectFileBtn"
+                                >
+                                    Select File
+                                </label>
+                            </div>
+                        </section>
                     </div>
                 </section>
 
-                <!-- Processing Controls -->
-                <section
-                    class="controls-section"
-                    id="controlsSection"
-                    style="display: none"
-                    aria-label="Image processing controls"
-                >
-                    <h2>Image Processing Operations</h2>
-
-                    <div class="controls-grid">
-                        <div class="control-cluster cluster-logo">
-                            <h3 class="cluster-title">Best for Logos</h3>
-                            <div class="cluster-grid cluster-grid-logo">
-                                <!-- Horizontal Filters -->
-                                <div class="control-group">
-                                    <h3>Horizontal</h3>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="combine_filter_bottom"
-                                    >
-                                        Split ↓
-                                        <span class="recommended-badge"
-                                            >Recommended</span
-                                        >
-                                    </button>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="combine_filter_top"
-                                    >
-                                        Split ↑
-                                    </button>
-                                </div>
-
-                                <!-- Vertical Filters -->
-                                <div class="control-group">
-                                    <h3>Vertical</h3>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="combine_filter_left"
-                                    >
-                                        Split ←
-                                    </button>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="combine_filter_right"
-                                    >
-                                        Split →
-                                    </button>
-                                </div>
-
-                                <!-- Diagonal Filters -->
-                                <div class="control-group">
-                                    <h3>Diagonal</h3>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="combine_diagonal_tl_br"
-                                    >
-                                        Split ↘
-                                    </button>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="combine_diagonal_tr_bl"
-                                    >
-                                        Split ↙
-                                    </button>
-                                </div>
-                            </div>
+                <section class="step-section" id="stepManipulate" aria-label="Step 2: Manipulate image" style="display: none;">
+                    <div class="step-header">
+                        <span class="step-badge" aria-hidden="true">2</span>
+                        <div>
+                            <h2>Adjust & compare</h2>
+                            <p>Apply filters, crop, and preview the results.</p>
                         </div>
+                    </div>
 
-                        <div class="control-cluster cluster-selfie">
-                            <h3 class="cluster-title">Best for Selfies</h3>
-                            <div class="cluster-grid cluster-grid-selfie">
-                                <!-- Overlay Effects -->
-                                <div class="control-group">
-                                    <h3>Overlay Effects</h3>
-                                    <button
-                                        class="btn btn-filter"
-                                        data-filter="overlay_transparent"
-                                    >
-                                        Transparent Overlay
-                                    </button>
-                                    <div class="slider-container">
-                                        <label for="opacitySlider">Opacity: <span id="opacityValue">30</span>%</label>
-                                        <input
-                                            type="range"
-                                            id="opacitySlider"
-                                            min="0"
-                                            max="100"
-                                            value="30"
-                                            class="slider"
-                                            aria-label="Adjust overlay opacity from 0 to 100 percent"
-                                        />
+                    <div class="step-body">
+                        <section
+                            class="controls-section"
+                            id="controlsSection"
+                            style="display: none"
+                            aria-label="Image processing controls"
+                        >
+                            <div class="controls-grid">
+                                <div class="control-cluster cluster-logo">
+                                    <h3 class="cluster-title">Best for Logos</h3>
+                                    <div class="cluster-grid cluster-grid-logo">
+                                        <!-- Horizontal Filters -->
+                                        <div class="control-group">
+                                            <h3>Horizontal</h3>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="combine_filter_bottom"
+                                            >
+                                                Split ↓
+                                                <span class="recommended-badge"
+                                                    >Recommended</span
+                                                >
+                                            </button>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="combine_filter_top"
+                                            >
+                                                Split ↑
+                                            </button>
+                                        </div>
+
+                                        <!-- Vertical Filters -->
+                                        <div class="control-group">
+                                            <h3>Vertical</h3>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="combine_filter_left"
+                                            >
+                                                Split ←
+                                            </button>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="combine_filter_right"
+                                            >
+                                                Split →
+                                            </button>
+                                        </div>
+
+                                        <!-- Diagonal Filters -->
+                                        <div class="control-group">
+                                            <h3>Diagonal</h3>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="combine_diagonal_tl_br"
+                                            >
+                                                Split ↘
+                                            </button>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="combine_diagonal_tr_bl"
+                                            >
+                                                Split ↙
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="control-cluster cluster-selfie">
+                                    <h3 class="cluster-title">Best for Selfies</h3>
+                                    <div class="cluster-grid cluster-grid-selfie">
+                                        <!-- Overlay Effects -->
+                                        <div class="control-group">
+                                            <h3>Overlay Effects</h3>
+                                            <button
+                                                class="btn btn-filter"
+                                                data-filter="overlay_transparent"
+                                            >
+                                                Transparent Overlay
+                                            </button>
+                                            <div class="slider-container">
+                                                <label for="opacitySlider">Opacity: <span id="opacityValue">30</span>%</label>
+                                                <input
+                                                    type="range"
+                                                    id="opacitySlider"
+                                                    min="0"
+                                                    max="100"
+                                                    value="30"
+                                                    class="slider"
+                                                    aria-label="Adjust overlay opacity from 0 to 100 percent"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="action-buttons">
-                        <button class="btn btn-secondary" id="resetBtn">
-                            Reset to Original
-                        </button>
-                    </div>
-                </section>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary" id="resetBtn">
+                                    Reset to Original
+                                </button>
+                            </div>
+                        </section>
 
-                <!-- Image Display Section -->
-                <section
-                    class="images-section"
-                    id="imagesSection"
-                    style="display: none"
-                    aria-label="Image comparison"
-                >
-                    <div class="image-container">
-                        <h3>Original Image</h3>
-                        <div
-                            id="cropInstructions"
-                            style="
-                                display: none;
-                                margin-bottom: 1rem;
-                                padding: 0.75rem;
-                                background: #f0f9ff;
-                                border-left: 4px solid #0284c7;
-                                border-radius: 0.25rem;
-                                font-size: 0.9rem;
-                                color: #0c4a6e;
-                            "
+                        <section
+                            class="images-section"
+                            id="imagesSection"
+                            style="display: none"
+                            aria-label="Image comparison"
                         >
-                            <strong>Drag the selection to position your crop area.</strong>
-                            To apply crop, use one of the filters
-                        </div>
-                        <div class="image-wrapper">
-                            <canvas
-                                id="originalCanvas"
-                                role="img"
-                                aria-label="Original uploaded image"
-                            ></canvas>
-                            <div class="image-info" id="originalInfo"></div>
-                        </div>
-                    </div>
+                            <div class="image-container">
+                                <h3>Original Image</h3>
+                                <div
+                                    id="cropInstructions"
+                                    style="
+                                        display: none;
+                                        margin-bottom: 1rem;
+                                        padding: 0.75rem;
+                                        background: #f0f9ff;
+                                        border-left: 4px solid #0284c7;
+                                        border-radius: 0.25rem;
+                                        font-size: 0.9rem;
+                                        color: #0c4a6e;
+                                    "
+                                >
+                                    <strong>Drag the selection to position your crop area.</strong>
+                                    To apply crop, use one of the filters
+                                </div>
+                                <div class="image-wrapper">
+                                    <canvas
+                                        id="originalCanvas"
+                                        role="img"
+                                        aria-label="Original uploaded image"
+                                    ></canvas>
+                                    <div class="image-info" id="originalInfo"></div>
+                                </div>
+                            </div>
 
-                    <div class="arrow" aria-hidden="true">→</div>
+                            <div class="arrow" aria-hidden="true">→</div>
 
-                    <div class="image-container">
-                        <h3>Processed Image</h3>
-                        <div class="image-wrapper">
-                            <canvas
-                                id="processedCanvas"
-                                role="img"
-                                aria-label="Processed image with applied filters"
-                            ></canvas>
-                            <div class="image-info" id="processedInfo"></div>
-                        </div>
+                            <div class="image-container">
+                                <h3>Processed Image</h3>
+                                <div class="image-wrapper">
+                                    <canvas
+                                        id="processedCanvas"
+                                        role="img"
+                                        aria-label="Processed image with applied filters"
+                                    ></canvas>
+                                    <div class="image-info" id="processedInfo"></div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </section>
 
-                <!-- Download Section -->
-                <section
-                    class="download-section"
-                    id="downloadSection"
-                    style="display: none"
-                    aria-label="Download processed image"
-                >
-                    <div class="download-button-container">
-                        <button class="btn btn-success" id="downloadBtn">
-                            Download Processed Image
-                        </button>
+                <section class="step-section" id="stepDownload" aria-label="Step 3: Download image" style="display: none;">
+                    <div class="step-header">
+                        <span class="step-badge" aria-hidden="true">3</span>
+                        <div>
+                            <h2>Download & share</h2>
+                            <p>Pick your quality and export the processed result.</p>
+                        </div>
                     </div>
 
-                    <!-- Download Quality Options -->
-                    <div class="download-options" id="downloadOptions" style="display: none;">
-                        <h3>Download Quality & Format</h3>
-                        <div class="quality-radio-group">
-                            <label class="radio-option">
-                                <input
-                                    type="radio"
-                                    name="downloadQuality"
-                                    value="small-jpeg"
-                                    aria-label="Small JPEG - smallest file size, no transparency"
-                                />
-                                <span class="radio-label">
-                                    <strong>Small JPEG</strong>
-                                    <span class="radio-description">Smallest file (~30-40% original size)</span>
-                                </span>
-                            </label>
-                            <label class="radio-option">
-                                <input
-                                    type="radio"
-                                    name="downloadQuality"
-                                    value="balanced-jpeg"
-                                    checked
-                                    aria-label="JPEG - standard compression, good quality"
-                                />
-                                <span class="radio-label">
-                                    <strong>JPEG</strong>
-                                    <span class="radio-description">Standard compression (~50-70% original size), no transparency</span>
-                                </span>
-                            </label>
-                            <label class="radio-option">
-                                <input
-                                    type="radio"
-                                    name="downloadQuality"
-                                    value="high-png"
-                                    aria-label="PNG with transparency - preserves transparent areas (lightning overlay)"
-                                />
-                                <span class="radio-label">
-                                    <strong>PNG with Transparency</strong>
-                                    <span class="radio-description">Larger file, preserves transparent areas (for overlay effects)</span>
-                                </span>
-                            </label>
-                        </div>
+                    <div class="step-body">
+                        <section
+                            class="download-section"
+                            id="downloadSection"
+                            style="display: none"
+                            aria-label="Download processed image"
+                        >
+                            <div class="download-button-container">
+                                <button class="btn btn-success" id="downloadBtn">
+                                    Download Processed Image
+                                </button>
+                            </div>
+
+                            <!-- Download Quality Options -->
+                            <div class="download-options" id="downloadOptions" style="display: none;">
+                                <h3>Download Quality & Format</h3>
+                                <div class="quality-radio-group">
+                                    <label class="radio-option">
+                                        <input
+                                            type="radio"
+                                            name="downloadQuality"
+                                            value="small-jpeg"
+                                            aria-label="Small JPEG - smallest file size, no transparency"
+                                        />
+                                        <span class="radio-label">
+                                            <strong>Small JPEG</strong>
+                                            <span class="radio-description">Smallest file (~30-40% original size)</span>
+                                        </span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input
+                                            type="radio"
+                                            name="downloadQuality"
+                                            value="balanced-jpeg"
+                                            checked
+                                            aria-label="JPEG - standard compression, good quality"
+                                        />
+                                        <span class="radio-label">
+                                            <strong>JPEG</strong>
+                                            <span class="radio-description">Standard compression (~50-70% original size), no transparency</span>
+                                        </span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input
+                                            type="radio"
+                                            name="downloadQuality"
+                                            value="high-png"
+                                            aria-label="PNG with transparency - preserves transparent areas (lightning overlay)"
+                                        />
+                                        <span class="radio-label">
+                                            <strong>PNG with Transparency</strong>
+                                            <span class="radio-description">Larger file, preserves transparent areas (for overlay effects)</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </section>
 
