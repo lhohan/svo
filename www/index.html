@@ -33,6 +33,25 @@
             <section class="controls-section" id="controlsSection" style="display: none;">
                 <h2>Image Processing Operations</h2>
 
+                <!-- Output Settings -->
+                <div class="output-settings">
+                    <div class="setting-group">
+                        <label for="compressionLevel">Compression Level:</label>
+                        <select id="compressionLevel">
+                            <option value="0">Fast (Larger file, faster processing)</option>
+                            <option value="1" selected>Default (Balanced)</option>
+                            <option value="2">Best (Smaller file, slower processing)</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label for="outputFormat">Output Format:</label>
+                        <select id="outputFormat">
+                            <option value="png" selected>PNG (Lossless)</option>
+                            <option value="jpeg">JPEG (Lossy, smaller files)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="controls-grid">
                     <!-- Basic Filters -->
                     <div class="control-group">

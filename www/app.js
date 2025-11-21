@@ -30,6 +30,10 @@ const brightnessValue = document.getElementById('brightnessValue');
 const contrastSlider = document.getElementById('contrastSlider');
 const contrastValue = document.getElementById('contrastValue');
 
+// Output settings
+const compressionLevel = document.getElementById('compressionLevel');
+const outputFormat = document.getElementById('outputFormat');
+
 /**
  * Initialize the WebAssembly module
  */
@@ -109,7 +113,11 @@ function handleFileSelect(file) {
  * Display image on canvas
  */
 function displayImage(imageData, canvas, infoElement) {
-    const blob = new Blob([imageData], { type: 'image/png' });
+    // Detect image type from the data
+    const isJPEG = imageData[0] === 0xFF && imageData[1] === 0xD8;
+    const mimeType = isJPEG ? 'image/jpeg' : 'image/png';
+
+    const blob = new Blob([imageData], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const img = new Image();
 
@@ -124,7 +132,8 @@ function displayImage(imageData, canvas, infoElement) {
 
         // Update info
         const sizeKB = (imageData.length / 1024).toFixed(2);
-        infoElement.textContent = `${img.width} × ${img.height} px • ${sizeKB} KB`;
+        const formatLabel = isJPEG ? 'JPEG' : 'PNG';
+        infoElement.textContent = `${img.width} × ${img.height} px • ${sizeKB} KB • ${formatLabel}`;
 
         // Clean up
         URL.revokeObjectURL(url);
@@ -153,45 +162,49 @@ async function applyFilter(filterName, ...args) {
         // Small delay to allow UI to update
         await new Promise(resolve => setTimeout(resolve, 50));
 
+        // Get compression and format settings
+        const compression = parseInt(compressionLevel.value);
+        const format = outputFormat.value;
+
         let result;
 
-        // Call the appropriate WASM function
+        // Call the appropriate WASM function with compression and format
         switch (filterName) {
             case 'grayscale':
-                result = wasmModule.grayscale(currentImageData);
+                result = wasmModule.grayscale(currentImageData, compression, format);
                 break;
             case 'invert':
-                result = wasmModule.invert(currentImageData);
+                result = wasmModule.invert(currentImageData, compression, format);
                 break;
             case 'blur':
                 const sigma = parseFloat(args[0]);
-                result = wasmModule.blur(currentImageData, sigma);
+                result = wasmModule.blur(currentImageData, sigma, compression, format);
                 break;
             case 'brighten':
                 const brightness = parseInt(args[0]);
-                result = wasmModule.brighten(currentImageData, brightness);
+                result = wasmModule.brighten(currentImageData, brightness, compression, format);
                 break;
             case 'adjust_contrast':
                 const contrast = parseFloat(args[0]);
-                result = wasmModule.adjust_contrast(currentImageData, contrast);
+                result = wasmModule.adjust_contrast(currentImageData, contrast, compression, format);
                 break;
             case 'sepia':
-                result = wasmModule.sepia(currentImageData);
+                result = wasmModule.sepia(currentImageData, compression, format);
                 break;
             case 'rotate90':
-                result = wasmModule.rotate90(currentImageData);
+                result = wasmModule.rotate90(currentImageData, compression, format);
                 break;
             case 'rotate180':
-                result = wasmModule.rotate180(currentImageData);
+                result = wasmModule.rotate180(currentImageData, compression, format);
                 break;
             case 'rotate270':
-                result = wasmModule.rotate270(currentImageData);
+                result = wasmModule.rotate270(currentImageData, compression, format);
                 break;
             case 'fliph':
-                result = wasmModule.fliph(currentImageData);
+                result = wasmModule.fliph(currentImageData, compression, format);
                 break;
             case 'flipv':
-                result = wasmModule.flipv(currentImageData);
+                result = wasmModule.flipv(currentImageData, compression, format);
                 break;
             default:
                 throw new Error('Unknown filter: ' + filterName);
@@ -238,7 +251,12 @@ function downloadImage() {
         return;
     }
 
-    const blob = new Blob([currentImageData], { type: 'image/png' });
+    // Detect image type from the data
+    const isJPEG = currentImageData[0] === 0xFF && currentImageData[1] === 0xD8;
+    const mimeType = isJPEG ? 'image/jpeg' : 'image/png';
+    const extension = isJPEG ? 'jpg' : 'png';
+
+    const blob = new Blob([currentImageData], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -246,7 +264,7 @@ function downloadImage() {
     // Generate filename
     const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
     const baseName = originalFileName.replace(/\.[^/.]+$/, '');
-    a.download = `${baseName}_processed_${timestamp}.png`;
+    a.download = `${baseName}_processed_${timestamp}.${extension}`;
 
     document.body.appendChild(a);
     a.click();
