@@ -4,6 +4,14 @@ import init, * as wasm from "./pkg/image_processor_wasm.js";
 // Import version information
 import { VERSION, COMMIT_HASH } from "./version.js";
 
+// Import i18n helpers
+import {
+  initI18n,
+  changeLanguage,
+  getCurrentLanguage,
+  t,
+} from "./i18n.js";
+
 // Global state
 let wasmModule = null;
 let uploadedImageData = null;
@@ -86,9 +94,7 @@ async function initWasm() {
   try {
     // Check for WebAssembly support
     if (!("WebAssembly" in window)) {
-      showError(
-        "WebAssembly is not supported in your browser. Please use a modern browser like Chrome 57+, Firefox 52+, Safari 11+, or Edge 16+.",
-      );
+      showError(t("errors.wasmUnsupported"));
       console.error("WebAssembly not supported");
       return;
     }
@@ -106,7 +112,7 @@ async function initWasm() {
 
     showLoading(false);
   } catch (error) {
-    showError("Failed to load WebAssembly module: " + error.message);
+    showError(t("errors.wasmLoad"));
     showLoading(false);
     console.error("WASM initialization error:", error);
   }
@@ -143,7 +149,7 @@ function handleFileSelect(file) {
   // Validate file type
   const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
   if (!validTypes.includes(file.type)) {
-    showError("Please select a valid image file (PNG, JPEG, or WebP)");
+    showError(t("errors.invalidFile"));
     return;
   }
 
@@ -199,7 +205,7 @@ function handleFileSelect(file) {
   };
 
   reader.onerror = function () {
-    showError("Failed to read the file");
+    showError(t("errors.fileRead"));
   };
 
   reader.readAsArrayBuffer(file);
@@ -235,7 +241,7 @@ function displayImage(imageData, canvas, infoElement) {
     };
 
     img.onerror = function () {
-      showError("Failed to load image");
+      showError(t("errors.imageLoad"));
       URL.revokeObjectURL(url);
       reject(new Error("Failed to load image"));
     };
@@ -249,7 +255,7 @@ function displayImage(imageData, canvas, infoElement) {
  */
 async function applyFilter(filterName, ...args) {
   if (!wasmModule || !currentImageData) {
-    showError("No image loaded or WASM module not initialized");
+    showError(t("errors.noImage"));
     return;
   }
 
@@ -281,17 +287,13 @@ async function applyFilter(filterName, ...args) {
     switch (filterName) {
       case "combine_filter_top":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
         result = wasmModule.combine_filter_top(imageToFilter, overlayImageData);
         break;
       case "combine_filter_bottom":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
         result = wasmModule.combine_filter_bottom(
           imageToFilter,
@@ -300,9 +302,7 @@ async function applyFilter(filterName, ...args) {
         break;
       case "combine_filter_left":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
         result = wasmModule.combine_filter_left(
           imageToFilter,
@@ -311,9 +311,7 @@ async function applyFilter(filterName, ...args) {
         break;
       case "combine_filter_right":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
         result = wasmModule.combine_filter_right(
           imageToFilter,
@@ -322,9 +320,7 @@ async function applyFilter(filterName, ...args) {
         break;
       case "combine_diagonal_tl_br":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
         result = wasmModule.combine_diagonal_tl_br(
           imageToFilter,
@@ -333,9 +329,7 @@ async function applyFilter(filterName, ...args) {
         break;
       case "combine_diagonal_tr_bl":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
         result = wasmModule.combine_diagonal_tr_bl(
           imageToFilter,
@@ -344,9 +338,7 @@ async function applyFilter(filterName, ...args) {
         break;
       case "overlay_transparent":
         if (!overlayImageData) {
-          throw new Error(
-            "Overlay image not loaded. Please ensure lightning.png is available.",
-          );
+          throw new Error(t("errors.overlayMissing"));
         }
 
         // ARCHITECTURAL NOTE: Overlay filter is intentionally non-cumulative (uses originalImageData)
@@ -367,7 +359,7 @@ async function applyFilter(filterName, ...args) {
         );
         break;
       default:
-        throw new Error("Unknown filter: " + filterName);
+        throw new Error(t("errors.unknownFilter"));
     }
 
     // Update current image data
@@ -378,7 +370,10 @@ async function applyFilter(filterName, ...args) {
 
     showLoading(false);
   } catch (error) {
-    showError("Processing failed: " + error.message);
+    const localizedMessage = error && typeof error.message === "string" && error.message.trim().length > 0
+      ? error.message
+      : t("errors.processingFailed");
+    showError(localizedMessage);
     showLoading(false);
     console.error("Filter error:", error);
   }
@@ -428,7 +423,7 @@ async function resetImage() {
  */
 function downloadImage() {
   if (!currentImageData) {
-    showError("No processed image to download");
+    showError(t("errors.noProcessedImage"));
     return;
   }
 
@@ -467,7 +462,7 @@ function downloadImage() {
 
   // Show compression indicator
   const originalText = downloadBtn.textContent;
-  downloadBtn.textContent = "Optimizing...";
+  downloadBtn.textContent = t("status.optimizing");
   downloadBtn.disabled = true;
 
   try {
@@ -501,7 +496,8 @@ function downloadImage() {
       `Downloaded as ${formatLabel}: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (${reduction}% reduction)`
     );
   } catch (err) {
-    showError(`Download failed: ${err.message}`);
+    showError(t("errors.downloadFailed"));
+    console.error("Download failed", err);
   } finally {
     // Restore button
     downloadBtn.textContent = originalText;
@@ -707,151 +703,197 @@ function exitCropMode() {
 }
 
 
-// Event Listeners
+function setupEventListeners() {
+  // File input change handler (label triggers file picker via HTML)
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files.length > 0) {
+      handleFileSelect(e.target.files[0]);
+    }
+  });
 
-// File input change handler (label triggers file picker via HTML)
-fileInput.addEventListener("change", (e) => {
-  if (e.target.files.length > 0) {
-    handleFileSelect(e.target.files[0]);
-  }
-});
-
-// Drag and drop
-uploadArea.addEventListener("click", (e) => {
-  // Avoid double-triggering when clicking the label (it already triggers file input via for attribute)
-  if (e.target.id === "selectFileBtn" || e.target.closest("#selectFileBtn")) {
-    return;
-  }
-  fileInput.click();
-});
-
-// Keyboard accessibility for upload area
-uploadArea.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
+  // Drag and drop
+  uploadArea.addEventListener("click", (e) => {
+    // Avoid double-triggering when clicking the label (it already triggers file picker via for attribute)
+    if (e.target.id === "selectFileBtn" || e.target.closest("#selectFileBtn")) {
+      return;
+    }
     fileInput.click();
-  }
-});
-
-uploadArea.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  uploadArea.classList.add("dragover");
-});
-
-uploadArea.addEventListener("dragleave", () => {
-  uploadArea.classList.remove("dragover");
-});
-
-uploadArea.addEventListener("drop", (e) => {
-  e.preventDefault();
-  uploadArea.classList.remove("dragover");
-
-  if (e.dataTransfer.files.length > 0) {
-    handleFileSelect(e.dataTransfer.files[0]);
-  }
-});
-
-// Filter buttons
-document.querySelectorAll(".btn-filter").forEach((btn) => {
-  btn.addEventListener("click", function () {
-    const filter = this.getAttribute("data-filter");
-
-    applyFilter(filter);
   });
-});
 
-// Action buttons
-resetBtn.addEventListener("click", resetImage);
-downloadBtn.addEventListener("click", downloadImage);
-
-// Opacity slider
-const opacitySlider = document.getElementById("opacitySlider");
-const opacityValue = document.getElementById("opacityValue");
-if (opacitySlider && opacityValue) {
-  opacitySlider.addEventListener("input", function () {
-    opacityValue.textContent = this.value;
+  // Keyboard accessibility for upload area
+  uploadArea.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      fileInput.click();
+    }
   });
-}
 
-// Canvas mouse events for crop selection (on original canvas)
-originalCanvas.addEventListener("mousedown", (e) => {
-  if (!cropMode || !pendingCropParams) return;
+  uploadArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadArea.classList.add("dragover");
+  });
 
-  const coords = getCanvasCoordinates(e.clientX, e.clientY);
+  uploadArea.addEventListener("dragleave", () => {
+    uploadArea.classList.remove("dragover");
+  });
 
-  // Store click position temporarily
-  dragStartX = coords.x;
-  dragStartY = coords.y;
-  isDragging = false;
-});
+  uploadArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove("dragover");
 
-originalCanvas.addEventListener("mousemove", (e) => {
-  if (!cropMode || dragStartX === null || !pendingCropParams) return;
+    if (e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  });
 
-  const coords = getCanvasCoordinates(e.clientX, e.clientY);
+  // Filter buttons
+  document.querySelectorAll(".btn-filter").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const filter = this.getAttribute("data-filter");
 
-  // Check if user has dragged beyond threshold
-  const dragDistance = Math.hypot(coords.x - dragStartX, coords.y - dragStartY);
+      applyFilter(filter);
+    });
+  });
 
-  if (!isDragging && dragDistance < MIN_DRAG_DISTANCE) {
-    // Not dragging yet, ignore small movements
-    return;
+  // Action buttons
+  resetBtn.addEventListener("click", resetImage);
+  downloadBtn.addEventListener("click", downloadImage);
+
+  // Opacity slider
+  const opacitySlider = document.getElementById("opacitySlider");
+  const opacityValue = document.getElementById("opacityValue");
+  if (opacitySlider && opacityValue) {
+    opacitySlider.addEventListener("input", function () {
+      opacityValue.textContent = this.value;
+    });
   }
 
-  if (!isDragging) {
-    isDragging = true;
-    originalCanvas.style.cursor = "grabbing";
-  }
+  // Canvas mouse events for crop selection (on original canvas)
+  originalCanvas.addEventListener("mousedown", (e) => {
+    if (!cropMode || !pendingCropParams) return;
 
-  // Calculate new position based on drag direction
-  const canvasWidth = originalCanvas.width;
-  const canvasHeight = originalCanvas.height;
-  const size = pendingCropParams.size;
+    const coords = getCanvasCoordinates(e.clientX, e.clientY);
 
-  if (isLandscape) {
-    // Allow horizontal dragging only
-    let newX = pendingCropParams.x + (coords.x - dragStartX);
-    // Constrain to image bounds
-    newX = Math.max(0, Math.min(newX, canvasWidth - size));
-    pendingCropParams.x = Math.floor(newX);
-  } else {
-    // Allow vertical dragging only
-    let newY = pendingCropParams.y + (coords.y - dragStartY);
-    // Constrain to image bounds
-    newY = Math.max(0, Math.min(newY, canvasHeight - size));
-    pendingCropParams.y = Math.floor(newY);
-  }
+    // Store click position temporarily
+    dragStartX = coords.x;
+    dragStartY = coords.y;
+    isDragging = false;
+  });
 
-  dragStartX = coords.x;
-  dragStartY = coords.y;
+  originalCanvas.addEventListener("mousemove", (e) => {
+    if (!cropMode || dragStartX === null || !pendingCropParams) return;
 
-  drawCropSelection();
-  updateCropPreview();
-});
+    const coords = getCanvasCoordinates(e.clientX, e.clientY);
 
-originalCanvas.addEventListener("mouseup", () => {
-  if (!cropMode) return;
+    // Check if user has dragged beyond threshold
+    const dragDistance = Math.hypot(coords.x - dragStartX, coords.y - dragStartY);
 
-  // Reset drag tracking
-  dragStartX = null;
-  dragStartY = null;
-  isDragging = false;
+    if (!isDragging && dragDistance < MIN_DRAG_DISTANCE) {
+      // Not dragging yet, ignore small movements
+      return;
+    }
 
-  // Reset cursor back to grab when drag ends
-  originalCanvas.style.cursor = "grab";
-});
+    if (!isDragging) {
+      isDragging = true;
+      originalCanvas.style.cursor = "grabbing";
+    }
 
-originalCanvas.addEventListener("mouseleave", () => {
-  if (cropMode && dragStartX !== null) {
-    // User left canvas while clicking - cancel the drag
+    // Calculate new position based on drag direction
+    const canvasWidth = originalCanvas.width;
+    const canvasHeight = originalCanvas.height;
+    const size = pendingCropParams.size;
+
+    if (isLandscape) {
+      // Allow horizontal dragging only
+      let newX = pendingCropParams.x + (coords.x - dragStartX);
+      // Constrain to image bounds
+      newX = Math.max(0, Math.min(newX, canvasWidth - size));
+      pendingCropParams.x = Math.floor(newX);
+    } else {
+      // Allow vertical dragging only
+      let newY = pendingCropParams.y + (coords.y - dragStartY);
+      // Constrain to image bounds
+      newY = Math.max(0, Math.min(newY, canvasHeight - size));
+      pendingCropParams.y = Math.floor(newY);
+    }
+
+    dragStartX = coords.x;
+    dragStartY = coords.y;
+
+    drawCropSelection();
+    updateCropPreview();
+  });
+
+  originalCanvas.addEventListener("mouseup", () => {
+    if (!cropMode) return;
+
+    // Reset drag tracking
     dragStartX = null;
     dragStartY = null;
     isDragging = false;
 
-    // Reset cursor back to grab
+    // Reset cursor back to grab when drag ends
     originalCanvas.style.cursor = "grab";
-  }
-});
+  });
 
-// Initialize WASM on page load
-initWasm();
+  originalCanvas.addEventListener("mouseleave", () => {
+    if (cropMode && dragStartX !== null) {
+      // User left canvas while clicking - cancel the drag
+      dragStartX = null;
+      dragStartY = null;
+      isDragging = false;
+
+      // Reset cursor back to grab
+      originalCanvas.style.cursor = "grab";
+    }
+  });
+}
+
+function updateLanguageButtonState(activeLang) {
+  const targetLang = activeLang || getCurrentLanguage();
+  document.querySelectorAll(".lang-btn[data-lang]").forEach((button) => {
+    const lang = button.getAttribute("data-lang");
+    const isActive = lang === targetLang;
+    button.classList.toggle("lang-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function setupLanguageControls() {
+  const buttons = document.querySelectorAll(".lang-btn[data-lang]");
+  buttons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const lang = event.currentTarget.getAttribute("data-lang");
+      if (!lang || lang === getCurrentLanguage()) {
+        updateLanguageButtonState(getCurrentLanguage());
+        return;
+      }
+      try {
+        await changeLanguage(lang);
+        updateLanguageButtonState(lang);
+      } catch (error) {
+        console.error("Language switch failed", error);
+      }
+    });
+  });
+
+  updateLanguageButtonState(getCurrentLanguage());
+}
+
+async function bootstrap() {
+  try {
+    await initI18n();
+  } catch (error) {
+    console.error("i18n initialization failed", error);
+  }
+
+  setupLanguageControls();
+  setupEventListeners();
+
+  await initWasm();
+}
+
+bootstrap().catch((error) => {
+  console.error("App initialization failed", error);
+  showError(t("errors.wasmLoad"));
+});

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Smartphone Free Badge Maker</title>
+        <title data-i18n="meta.title">Smartphone Free Badge Maker</title>
         <link rel="stylesheet" href="style.css" />
         <link
             rel="preload"
@@ -27,8 +27,8 @@
                     margin: 1rem;
                 "
             >
-                <h2>JavaScript Required</h2>
-                <p>
+                <h2 data-i18n="noscript.title">JavaScript Required</h2>
+                <p data-i18n="noscript.description">
                     This application requires JavaScript and WebAssembly to
                     function. Please enable JavaScript in your browser settings.
                 </p>
@@ -39,6 +39,8 @@
                 <div
                     class="badge-row"
                     aria-label="School crest plus SVO lightning equals combined logo"
+                    data-i18n="header.badgeAria"
+                    data-i18n-attr="aria-label"
                 >
                     <img
                         src="school_logo_example.png"
@@ -59,8 +61,37 @@
                     />
                 </div>
 
-                <h1>Smartphone Free Badge Maker</h1>
-                <p class="intro-purpose">
+                <div class="hero-title-row">
+                    <h1 data-i18n="header.title">Smartphone Free Badge Maker</h1>
+                    <div
+                        class="lang-switcher"
+                        aria-label="Language selector"
+                        data-i18n="language.selector.aria"
+                        data-i18n-attr="aria-label"
+                    >
+                        <button
+                            type="button"
+                            class="lang-btn"
+                            data-lang="en"
+                            aria-label="Switch to English"
+                            data-i18n="language.button.en"
+                            data-i18n-attr="aria-label"
+                        >
+                            EN
+                        </button>
+                        <button
+                            type="button"
+                            class="lang-btn"
+                            data-lang="nl"
+                            aria-label="Switch to Dutch"
+                            data-i18n="language.button.nl"
+                            data-i18n-attr="aria-label"
+                        >
+                            NL
+                        </button>
+                    </div>
+                </div>
+                <p class="intro-purpose" data-i18n="header.description">
                     Fast, private image tool that helps schools and individuals
                     show their solidarity with Smartphone Free initiatives by
                     combining the official lightning logo with school logos and
@@ -68,39 +99,49 @@
                 </p>
 
                 <ul class="intro-highlights">
-                    <li>Two overlay modes for school logos and portraits.</li>
-                    <li>
+                    <li data-i18n="header.highlight1">
+                        Two overlay modes for school logos and portraits.
+                    </li>
+                    <li data-i18n="header.highlight2">
                         Download-ready exports with or without transparency.
                     </li>
-                    <li>Private: everything runs in your browser.</li>
+                    <li data-i18n="header.highlight3">
+                        Private: everything runs in your browser.
+                    </li>
                 </ul>
             </header>
 
             <section
                 class="example-section"
                 aria-label="How it works and examples"
+                data-i18n="examples.sectionAria"
+                data-i18n-attr="aria-label"
             >
                 <section
                     class="intro-steps"
                     aria-label="How it works"
                     role="list"
+                    data-i18n="introSteps.aria"
+                    data-i18n-attr="aria-label"
                 >
                     <article class="intro-step-card" role="listitem">
                         <div class="intro-step-number">1</div>
-                        <h3>Upload</h3>
-                        <p>Drop any PNG or JPEG to start.</p>
+                        <h3 data-i18n="introSteps.upload.title">Upload</h3>
+                        <p data-i18n="introSteps.upload.body">
+                            Drop any PNG or JPEG to start.
+                        </p>
                     </article>
                     <article class="intro-step-card" role="listitem">
                         <div class="intro-step-number">2</div>
-                        <h3>Make</h3>
-                        <p>
+                        <h3 data-i18n="introSteps.make.title">Make</h3>
+                        <p data-i18n="introSteps.make.body">
                             Combine splits or soft overlays to with your asset.
                         </p>
                     </article>
                     <article class="intro-step-card" role="listitem">
                         <div class="intro-step-number">3</div>
-                        <h3>Download</h3>
-                        <p>
+                        <h3 data-i18n="introSteps.download.title">Download</h3>
+                        <p data-i18n="introSteps.download.body">
                             Export instantly in PNG or JPEG to use on any
                             platform.
                         </p>
@@ -109,8 +150,15 @@
                 <div class="example-grid">
                     <article class="example-card">
                         <header>
-                            <p class="example-label">School logos</p>
-                            <h3>Directional split</h3>
+                            <p
+                                class="example-label"
+                                data-i18n="examples.school.label"
+                            >
+                                School logos
+                            </p>
+                            <h3 data-i18n="examples.school.title">
+                                Directional split
+                            </h3>
                         </header>
                         <div class="example-pair">
                             <figure>
@@ -118,25 +166,36 @@
                                     src="school_logo_example.png"
                                     alt="School crest before overlay"
                                 />
-                                <figcaption>Before</figcaption>
+                                <figcaption data-i18n="examples.before">
+                                    Before
+                                </figcaption>
                             </figure>
                             <figure>
                                 <img
                                     src="school_logo_example_2.png"
                                     alt="School crest after SVO split overlay"
                                 />
-                                <figcaption>After</figcaption>
+                                <figcaption data-i18n="examples.after">
+                                    After
+                                </figcaption>
                             </figure>
                         </div>
-                        <p class="example-caption">
+                        <p class="example-caption" data-i18n="examples.school.caption">
                             Directional splits add the lightning bar without
                             obscuring mascots or typography.
                         </p>
                     </article>
                     <article class="example-card">
                         <header>
-                            <p class="example-label">Profile photos</p>
-                            <h3>Transparent overlay</h3>
+                            <p
+                                class="example-label"
+                                data-i18n="examples.profile.label"
+                            >
+                                Profile photos
+                            </p>
+                            <h3 data-i18n="examples.profile.title">
+                                Transparent overlay
+                            </h3>
                         </header>
                         <div class="example-pair">
                             <figure>
@@ -154,7 +213,9 @@
                                         loading="eager"
                                     />
                                 </picture>
-                                <figcaption>Before</figcaption>
+                                <figcaption data-i18n="examples.before">
+                                    Before
+                                </figcaption>
                             </figure>
                             <figure>
                                 <picture>
@@ -171,10 +232,15 @@
                                         loading="eager"
                                     />
                                 </picture>
-                                <figcaption>After</figcaption>
+                                <figcaption data-i18n="examples.after">
+                                    After
+                                </figcaption>
                             </figure>
                         </div>
-                        <p class="example-caption">
+                        <p
+                            class="example-caption"
+                            data-i18n="examples.profile.caption"
+                        >
                             Soft transparency keeps faces visible while
                             signaling support with the lightning inset.
                         </p>
@@ -187,12 +253,18 @@
                     class="step-section"
                     id="stepUpload"
                     aria-label="Step 1: Upload image"
+                    data-i18n="steps.upload.aria"
+                    data-i18n-attr="aria-label"
                 >
                     <div class="step-header">
                         <span class="step-badge" aria-hidden="true">1</span>
                         <div>
-                            <h2>Upload your image</h2>
-                            <p>Choose a file to get started.</p>
+                            <h2 data-i18n="steps.upload.title">
+                                Upload your image
+                            </h2>
+                            <p data-i18n="steps.upload.description">
+                                Choose a file to get started.
+                            </p>
                         </div>
                     </div>
 
@@ -200,6 +272,8 @@
                         <section
                             class="upload-section"
                             aria-label="Image upload"
+                            data-i18n="upload.section.aria"
+                            data-i18n-attr="aria-label"
                         >
                             <div
                                 class="upload-area"
@@ -207,6 +281,8 @@
                                 role="button"
                                 tabindex="0"
                                 aria-label="Click or drag and drop to upload an image file. Supported formats: PNG, JPEG, WebP"
+                                data-i18n="upload.area.aria"
+                                data-i18n-attr="aria-label"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -220,26 +296,35 @@
                                     stroke-linejoin="round"
                                     aria-hidden="true"
                                 >
-                                    <title>Upload icon</title>
+                                    <title data-i18n="icons.upload">
+                                        Upload icon
+                                    </title>
                                     <path
                                         d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
                                     ></path>
                                     <polyline points="17 8 12 3 7 8"></polyline>
                                     <line x1="12" y1="3" x2="12" y2="15"></line>
                                 </svg>
-                                <h3>Choose an image</h3>
-                                <p>or drag and drop it here</p>
+                                <h3 data-i18n="upload.area.heading">
+                                    Choose an image
+                                </h3>
+                                <p data-i18n="upload.area.subheading">
+                                    or drag and drop it here
+                                </p>
                                 <input
                                     type="file"
                                     id="fileInput"
                                     accept="image/png,image/jpeg,image/jpg,image/webp"
                                     hidden
                                     aria-label="Select image file"
+                                    data-i18n="upload.fileInput.aria"
+                                    data-i18n-attr="aria-label"
                                 />
                                 <label
                                     for="fileInput"
                                     class="btn btn-primary"
                                     id="selectFileBtn"
+                                    data-i18n="upload.area.button"
                                 >
                                     Select File
                                 </label>
@@ -253,12 +338,18 @@
                     id="stepManipulate"
                     aria-label="Step 2: Manipulate image"
                     style="display: none"
+                    data-i18n="steps.manipulate.aria"
+                    data-i18n-attr="aria-label"
                 >
                     <div class="step-header">
                         <span class="step-badge" aria-hidden="true">2</span>
                         <div>
-                            <h2>Adjust & compare</h2>
-                            <p>Apply filters, crop, and preview the results.</p>
+                            <h2 data-i18n="steps.manipulate.title">
+                                Adjust & compare
+                            </h2>
+                            <p data-i18n="steps.manipulate.description">
+                                Apply filters, crop, and preview the results.
+                            </p>
                         </div>
                     </div>
 
@@ -268,6 +359,8 @@
                             id="controlsSection"
                             style="display: none"
                             aria-label="Image processing controls"
+                            data-i18n="controls.section.aria"
+                            data-i18n-attr="aria-label"
                         >
                             <div class="control-panels" role="tablist">
                                 <details
@@ -277,11 +370,15 @@
                                     <summary>
                                         <div>
                                             <h3 class="panel-title">
-                                                Best for school logo
+                                                <span data-i18n="panels.logo.title">
+                                                    Best for school logo
+                                                </span>
                                             </h3>
                                             <p class="panel-subtitle">
-                                                Directional splits for icons and
-                                                marks.
+                                                <span data-i18n="panels.logo.subtitle">
+                                                    Directional splits for icons and
+                                                    marks.
+                                                </span>
                                             </p>
                                         </div>
                                         <span
@@ -292,62 +389,81 @@
                                     <div class="panel-body">
                                         <div class="control-stack">
                                             <p class="control-stack-label">
-                                                Horizontal splits
+                                                <span data-i18n="panels.logo.horizontal">
+                                                    Horizontal splits
+                                                </span>
                                             </p>
                                             <div class="control-button-row">
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="combine_filter_bottom"
                                                 >
-                                                    Split ↓
+                                                    <span data-i18n="buttons.splitDown">
+                                                        Split ↓
+                                                    </span>
                                                     <span
                                                         class="recommended-badge"
-                                                        >Recommended</span
+                                                        data-i18n="badges.recommended"
+                                                    >Recommended</span
                                                     >
                                                 </button>
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="combine_filter_top"
                                                 >
-                                                    Split ↑
+                                                    <span data-i18n="buttons.splitUp">
+                                                        Split ↑
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="control-stack">
                                             <p class="control-stack-label">
-                                                Vertical splits
+                                                <span data-i18n="panels.logo.vertical">
+                                                    Vertical splits
+                                                </span>
                                             </p>
                                             <div class="control-button-row">
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="combine_filter_left"
                                                 >
-                                                    Split ←
+                                                    <span data-i18n="buttons.splitLeft">
+                                                        Split ←
+                                                    </span>
                                                 </button>
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="combine_filter_right"
                                                 >
-                                                    Split →
+                                                    <span data-i18n="buttons.splitRight">
+                                                        Split →
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="control-stack">
                                             <p class="control-stack-label">
-                                                Diagonal splits
+                                                <span data-i18n="panels.logo.diagonal">
+                                                    Diagonal splits
+                                                </span>
                                             </p>
                                             <div class="control-button-row">
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="combine_diagonal_tl_br"
                                                 >
-                                                    Split ↘
+                                                    <span data-i18n="buttons.splitDiagTLBR">
+                                                        Split ↘
+                                                    </span>
                                                 </button>
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="combine_diagonal_tr_bl"
                                                 >
-                                                    Split ↙
+                                                    <span data-i18n="buttons.splitDiagTRBL">
+                                                        Split ↙
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
@@ -361,11 +477,15 @@
                                     <summary>
                                         <div>
                                             <h3 class="panel-title">
-                                                Best for profile picture
+                                                <span data-i18n="panels.profile.title">
+                                                    Best for profile picture
+                                                </span>
                                             </h3>
                                             <p class="panel-subtitle">
-                                                Soft transparent overlays with
-                                                live opacity.
+                                                <span data-i18n="panels.profile.subtitle">
+                                                    Soft transparent overlays with
+                                                    live opacity.
+                                                </span>
                                             </p>
                                         </div>
                                         <span
@@ -376,12 +496,15 @@
                                     <div class="panel-body">
                                         <div class="control-stack">
                                             <p class="control-stack-label">
-                                                Overlay effects
+                                                <span data-i18n="panels.profile.effects">
+                                                    Overlay effects
+                                                </span>
                                             </p>
                                             <div class="control-button-row">
                                                 <button
                                                     class="btn btn-filter"
                                                     data-filter="overlay_transparent"
+                                                    data-i18n="buttons.transparentOverlay"
                                                 >
                                                     Transparent Overlay
                                                 </button>
@@ -390,7 +513,9 @@
                                                 class="slider-label"
                                                 for="opacitySlider"
                                             >
-                                                Opacity:
+                                                <span data-i18n="panels.profile.opacityLabel">
+                                                    Opacity:
+                                                </span>
                                                 <span id="opacityValue">30</span
                                                 >%
                                             </label>
@@ -402,6 +527,8 @@
                                                 value="30"
                                                 class="slider"
                                                 aria-label="Adjust overlay opacity from 0 to 100 percent"
+                                                data-i18n="panels.profile.opacityAria"
+                                                data-i18n-attr="aria-label"
                                             />
                                         </div>
                                     </div>
@@ -409,7 +536,11 @@
                             </div>
 
                             <div class="action-buttons">
-                                <button class="btn btn-secondary" id="resetBtn">
+                                <button
+                                    class="btn btn-secondary"
+                                    id="resetBtn"
+                                    data-i18n="buttons.reset"
+                                >
                                     Reset to Original
                                 </button>
                             </div>
@@ -420,9 +551,13 @@
                             id="imagesSection"
                             style="display: none"
                             aria-label="Image comparison"
+                            data-i18n="images.section.aria"
+                            data-i18n-attr="aria-label"
                         >
                             <div class="image-container">
-                                <h3>Original Image</h3>
+                                <h3 data-i18n="images.original">
+                                    Original Image
+                                </h3>
                                 <div
                                     id="cropInstructions"
                                     style="
@@ -436,17 +571,21 @@
                                         color: #0c4a6e;
                                     "
                                 >
-                                    <strong
-                                        >Drag the selection to position your
-                                        crop area.</strong
-                                    >
-                                    To apply crop, use one of the filters
+                                    <strong data-i18n="crop.instructions.title">
+                                        Drag the selection to position your crop
+                                        area.
+                                    </strong>
+                                    <span data-i18n="crop.instructions.body">
+                                        To apply crop, use one of the filters
+                                    </span>
                                 </div>
                                 <div class="image-wrapper">
                                     <canvas
                                         id="originalCanvas"
                                         role="img"
                                         aria-label="Original uploaded image"
+                                        data-i18n="canvas.original.aria"
+                                        data-i18n-attr="aria-label"
                                     ></canvas>
                                     <div
                                         class="image-info"
@@ -458,12 +597,16 @@
                             <div class="arrow" aria-hidden="true">→</div>
 
                             <div class="image-container">
-                                <h3>Processed Image</h3>
+                                <h3 data-i18n="images.processed">
+                                    Processed Image
+                                </h3>
                                 <div class="image-wrapper">
                                     <canvas
                                         id="processedCanvas"
                                         role="img"
                                         aria-label="Processed image with applied filters"
+                                        data-i18n="canvas.processed.aria"
+                                        data-i18n-attr="aria-label"
                                     ></canvas>
                                     <div
                                         class="image-info"
@@ -480,12 +623,16 @@
                     id="stepDownload"
                     aria-label="Step 3: Download image"
                     style="display: none"
+                    data-i18n="steps.download.aria"
+                    data-i18n-attr="aria-label"
                 >
                     <div class="step-header">
                         <span class="step-badge" aria-hidden="true">3</span>
                         <div>
-                            <h2>Download & share</h2>
-                            <p>
+                            <h2 data-i18n="steps.download.title">
+                                Download & share
+                            </h2>
+                            <p data-i18n="steps.download.description">
                                 Pick your quality and export the processed
                                 result.
                             </p>
@@ -498,11 +645,14 @@
                             id="downloadSection"
                             style="display: none"
                             aria-label="Download processed image"
+                            data-i18n="download.section.aria"
+                            data-i18n-attr="aria-label"
                         >
                             <div class="download-button-container">
                                 <button
                                     class="btn btn-success"
                                     id="downloadBtn"
+                                    data-i18n="download.button"
                                 >
                                     Download Processed Image
                                 </button>
@@ -514,17 +664,23 @@
                                 id="downloadOptions"
                                 style="display: none"
                             >
-                                <legend>Download Quality & Format</legend>
+                                <legend data-i18n="download.legend">
+                                    Download Quality & Format
+                                </legend>
                                 <label class="radio-row">
                                     <input
                                         type="radio"
                                         name="downloadQuality"
                                         value="small-jpeg"
                                         aria-label="Small JPEG - smallest file size, no transparency"
+                                        data-i18n="download.option.small.aria"
+                                        data-i18n-attr="aria-label"
                                     />
                                     <div>
-                                        <strong>Small JPEG</strong>
-                                        <span
+                                        <strong data-i18n="download.option.small.title">
+                                            Small JPEG
+                                        </strong>
+                                        <span data-i18n="download.option.small.description"
                                             >Smallest file (~30-40% original
                                             size)</span
                                         >
@@ -537,10 +693,14 @@
                                         value="balanced-jpeg"
                                         checked
                                         aria-label="JPEG - standard compression, good quality"
+                                        data-i18n="download.option.balanced.aria"
+                                        data-i18n-attr="aria-label"
                                     />
                                     <div>
-                                        <strong>JPEG</strong>
-                                        <span
+                                        <strong data-i18n="download.option.balanced.title">
+                                            JPEG
+                                        </strong>
+                                        <span data-i18n="download.option.balanced.description"
                                             >Standard compression (~50-70%
                                             original size), no
                                             transparency</span
@@ -553,10 +713,14 @@
                                         name="downloadQuality"
                                         value="high-png"
                                         aria-label="PNG with transparency - preserves transparent areas (lightning overlay)"
+                                        data-i18n="download.option.png.aria"
+                                        data-i18n-attr="aria-label"
                                     />
                                     <div>
-                                        <strong>PNG with Transparency</strong>
-                                        <span
+                                        <strong data-i18n="download.option.png.title">
+                                            PNG with Transparency
+                                        </strong>
+                                        <span data-i18n="download.option.png.description"
                                             >Larger file, preserves transparent
                                             areas (for overlay effects)</span
                                         >
@@ -576,7 +740,7 @@
                 aria-live="polite"
             >
                 <div class="spinner" aria-hidden="true"></div>
-                <p>Processing image...</p>
+                <p data-i18n="status.processing">Processing image...</p>
             </div>
 
             <!-- Error Message -->
@@ -589,8 +753,14 @@
 
             <footer>
                 <p class="tech-info">
-                    Created by <a href="https://hanlho.com">Hans L'Hoest</a>
-                    | Smartphone Free Logo ©
+                    <span data-i18n="footer.createdByPrefix">Created by</span>
+                    <a href="https://hanlho.com">Hans L'Hoest</a>
+                    <span class="tech-info-separator" aria-hidden="true"
+                        >&nbsp;|&nbsp;</span
+                    >
+                    <span data-i18n="footer.logoCreditPrefix"
+                        >Smartphone Free Logo ©</span
+                    >
                     <a href="https://smartphonevrijopgroeien.nl"
                         >Smartphonevrijopgroeien.nl</a
                     >
