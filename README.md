@@ -1,35 +1,35 @@
-# Image Processor - Rust WebAssembly
+# Smartphone Free Badge Maker
 
-A modern, high-performance client-side image processing web application built with Rust and WebAssembly. All image processing happens entirely in your browser - no server uploads required!
+A client-side web application that adds Smartphone Free ([Smartphonevrij Opgroeien](https://smartphonevrijopgroeien.nl)) lightning badges to profile photos and school logos. All image processing happens entirely in your browser - no server uploads required!
 
-This project was developed as a tryout of Claude Code Web. The result you see here is the result of a single well specified prompt.
+This tool helps schools and individuals show solidarity with "smartphone free" education initiatives by adding the distinctive lightning mark to their images.
+
 ## Features
 
-### Image Filters
-- **Grayscale** - Convert images to black and white
-- **Invert** - Invert all colors
-- **Sepia Tone** - Apply vintage sepia effect
+### Badge Creation
+- **Lightning Badge** - Add the smartphone free education lightning mark to images
+- **Transparent Overlay** - Maintains image quality while adding the badge
 
-### Adjustments
-- **Blur** - Gaussian blur with adjustable intensity (0-10)
-- **Brightness** - Adjust image brightness (-100 to +100)
-- **Contrast** - Modify image contrast (-100 to +100)
+### Image Processing
+- **Drag-and-Drop Upload** - Simple file upload interface
+- **Real-time Preview** - See results instantly before downloading
+- **Format Support** - Works with PNG, JPEG, and WebP (untested) images
+- **Private Processing** - All processing happens locally in your browser
 
-### Transformations
-- **Rotate** - 90°, 180°, or 270° rotation
-- **Flip** - Horizontal or vertical flip
+### Smart Features
+- **Automatic Sizing** - Badge scales appropriately to image dimensions
+- **High Quality Output** - Maintains original image resolution
+- **One-Click Download** - Export as PNG with transparency preserved
 
-### Additional Features
-- Drag-and-drop file upload
-- Real-time image preview
-- Download processed images
-- Support for PNG, JPEG, and WebP formats
-- Fully responsive design
-- No data leaves your browser
+## Background or why I made this
+
+My reasons for creating this project are several:
+
+1. I wanted to support the Smartphone Free initiative. I noticed there was a line in the documentation saying how you could create a logo by combining your own school logo with their lightning logo. Since this is not trivial for most people, I decided to build a focused, simple-to-use tool that could help with that. And, as such, maybe help people spread the word.
+2. Software engineering interest. Can I build a simple tool using modern day AI agents effectively and efficiently? What are their limits, how do I use them?
+3. This one is minor: I wanted to assess usage of Rust on the front end.
 
 ## Architecture
-
-This application demonstrates the power of WebAssembly for compute-intensive tasks in the browser:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -48,7 +48,7 @@ This application demonstrates the power of WebAssembly for compute-intensive tas
 - Displays images on canvas
 - Calls WASM functions
 
-**Backend (Rust → WebAssembly):**
+**Image Processing (Rust → WebAssembly):**
 - Image decoding (PNG, JPEG, WebP)
 - Image processing algorithms
 - Image encoding
@@ -56,7 +56,47 @@ This application demonstrates the power of WebAssembly for compute-intensive tas
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+This project uses Nix for reproducible development environments. While you can manually install the dependencies, the recommended approach is to use Nix.
+
+### Option 1: Nix Flakes (Recommended)
+
+**Requirements:**
+- [Nix](https://nixos.org/download.html) with flakes enabled
+- [direnv](https://direnv.net/) (optional, for automatic environment loading)
+
+**Setup:**
+
+1. **Enable Nix flakes** (if not already enabled):
+   ```bash
+   # Add to your ~/.config/nix/nix.conf or /etc/nix/nix.conf
+   experimental-features = nix-command flakes
+   ```
+
+2. **Enter the development environment:**
+   ```bash
+   nix develop
+   ```
+   
+   Or with direnv (automatic):
+   ```bash
+   echo "use flake" > .envrc
+   direnv allow
+   ```
+
+3. **Verify environment:**
+   - Rust, wasm-pack, and other tools are automatically available
+   - Run `just --list` to see available commands
+
+**Included tools:**
+- `rustup` - Rust toolchain manager
+- `wasm-pack` - WebAssembly build tool
+- `binaryen` - WebAssembly optimizer (wasm-opt)
+- `simple-http-server` - Local development server
+- `just` - Task runner
+
+### Option 2: Manual Installation
+
+If you prefer not to use Nix, manually install the following:
 
 1. **Rust** (1.70 or later)
    ```bash
@@ -68,7 +108,12 @@ Before you begin, ensure you have the following installed:
    curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
    ```
 
-3. **A local web server** - Choose one:
+3. **just** - Task runner (optional but recommended)
+   ```bash
+   cargo install just
+   ```
+
+4. **A local web server** - Choose one:
    - Python 3: `python3 -m http.server`
    - Python 2: `python -m SimpleHTTPServer`
    - Node.js: `npx http-server`
@@ -94,54 +139,91 @@ image-processor-wasm/
 └── README.md
 ```
 
-## Setup Instructions
+## Development Commands (just)
 
-### 1. Build the WebAssembly Module
+This project uses [`just`](https://github.com/casey/just) as a task runner. All common operations are available as simple commands:
 
-This compiles the Rust code to WebAssembly:
+### Available Commands
+
+Run `just --list` to see all available commands:
 
 ```bash
+just --list
+```
+
+**Core Commands:**
+
+- **`just run`** - Start the development server
+  - Serves the `www/` directory on port 8000
+  - Auto-indexes directories for easy navigation
+  - Includes browser cache prevention for development
+
+- **`just build`** - Build WebAssembly in development mode
+  - Faster compilation for development
+  - Copies built files to `www/pkg/` for immediate testing
+  - Generates version and commit hash information
+
+- **`just build-release`** - Build WebAssembly in production mode
+  - Optimized build with wasm-pack release profile
+  - Enables WebAssembly optimizations (wasm-opt)
+  - Smaller binary size, better performance
+
+- **`just dev`** - Build and run server in one command
+  - Runs `just build` followed by `just run`
+  - Perfect for quick development iterations
+
+### Development Workflow
+
+**For development (fast iteration):**
+```bash
+just dev
+```
+
+**For testing production build:**
+```bash
+just build-release
+just run
+```
+
+**Making changes to Rust code:**
+1. Edit `src/lib.rs`
+2. Run `just build` (or `just build-release` for production)
+3. Refresh browser (hard refresh: Ctrl+Shift+R)
+
+**Making changes to frontend:**
+1. Edit files in `www/` directory
+2. Refresh browser - no rebuild needed
+
+### Manual Build (Alternative to just)
+
+If you prefer not to use `just`, you can build manually:
+
+```bash
+# Build WebAssembly
 wasm-pack build --target web
+
+# Copy to www directory (required for serving)
+cp -r pkg www/
+
+# Start development server
+simple-http-server www -p 8000 -i
 ```
 
-This command will:
-- Compile your Rust code to WebAssembly
-- Generate JavaScript bindings
-- Create the `pkg/` directory with all necessary files
-- Optimize the WASM binary for production
-
-**Build options:**
-- `--target web` - For ES6 module imports (recommended)
-- `--release` - Production build with optimizations (default)
-- `--dev` - Development build with debug symbols
-
-### 2. Serve the Application
-
-You need a local web server because browsers restrict ES6 module imports from `file://` URLs.
-
-**Option A: Python (recommended for simplicity)**
+For production builds:
 ```bash
-# From the project root
-python3 -m http.server 8080
+wasm-pack build --target web --release
+cp -r pkg www/
+simple-http-server www -p 8000 -i
 ```
 
-**Option B: Node.js**
-```bash
-npx http-server -p 8080
-```
-
-**Option C: Rust simple-http-server**
-```bash
-cargo install simple-http-server
-simple-http-server -p 8080
-```
-
-### 4. Open in Browser
+### Opening the Application
 
 Navigate to:
 ```
-http://localhost:8080/www/
+http://localhost:8000/
 ```
+
+The development server automatically serves from the `www/` directory and provides directory indexing for easy navigation.
 
 ## Usage
 
@@ -180,34 +262,18 @@ http://localhost:8080/www/
 
 ### Adding New Image Processing Functions
 
-1. **Add function to `src/lib.rs`:**
-   ```rust
-   #[wasm_bindgen]
-   pub fn my_new_filter(data: &[u8]) -> Result<Vec<u8>, JsValue> {
-       let img = bytes_to_image(data)?;
-       // ... your processing logic
-       image_to_bytes(&img, ImageFormat::Png)
-   }
-   ```
+1. **Add Rust function** in `src/lib.rs` - see existing functions for patterns
+2. **Add UI control** in `www/index.html` with `data-filter="your_function"`  
+3. **Add handler** in `www/app.js` switch statement
+4. **Run `just build``
 
-2. **Add UI control in `www/index.html`:**
-   ```html
-   <button class="btn btn-filter" data-filter="my_new_filter">
-       My New Filter
-   </button>
-   ```
+**Key rules:**
+- All exported functions return `Result<Vec<u8>, JsValue>`
+- Never use `.unwrap()` - use `?` operator
+- Include `log("Processing: Your Function")` for debugging
+- Use `imageToFilter` variable (handles pending crops)
 
-3. **Add handler in `www/app.js`:**
-   ```javascript
-   case 'my_new_filter':
-       result = wasmModule.my_new_filter(currentImageData);
-       break;
-   ```
-
-4. **Rebuild:**
-   ```bash
-   wasm-pack build --target web
-   ```
+**Examples:** Look at `combine_filter_top()` (dual image) or `crop_square()` (single image with parameters)
 
 ## Performance Optimization
 
@@ -336,4 +402,4 @@ Built with:
 
 ---
 
-**Note:** This is a demonstration project showcasing client-side image processing with Rust and WebAssembly. Feel free to use it as a learning resource or starting point for your own projects!
+**Note:** This is a demonstration project showcasing client-side image processing with Rust and WebAssembly. Feel free to use it as a learning resource your own projects!

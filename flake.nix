@@ -19,7 +19,7 @@
       ];
 
       shellHook = ''
-        echo "SVO Image manipulation"
+        echo "Smartphone Free Image manipulation"
         echo ""
         echo "$(just --list)"
         echo ""
