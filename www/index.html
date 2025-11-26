@@ -176,6 +176,50 @@
                             Download Processed Image
                         </button>
                     </div>
+
+                    <!-- Download Quality Options -->
+                    <div class="download-options" id="downloadOptions" style="display: none;">
+                        <h3>Download Quality & Format</h3>
+                        <div class="quality-radio-group">
+                            <label class="radio-option">
+                                <input
+                                    type="radio"
+                                    name="downloadQuality"
+                                    value="small-jpeg"
+                                    aria-label="Small JPEG - smallest file size, no transparency"
+                                />
+                                <span class="radio-label">
+                                    <strong>Small JPEG</strong>
+                                    <span class="radio-description">Smallest file (~30-40% original size)</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input
+                                    type="radio"
+                                    name="downloadQuality"
+                                    value="balanced-jpeg"
+                                    checked
+                                    aria-label="JPEG - standard compression, good quality"
+                                />
+                                <span class="radio-label">
+                                    <strong>JPEG</strong>
+                                    <span class="radio-description">Standard compression (~50-70% original size), no transparency</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input
+                                    type="radio"
+                                    name="downloadQuality"
+                                    value="high-png"
+                                    aria-label="PNG with transparency - preserves transparent areas (lightning overlay)"
+                                />
+                                <span class="radio-label">
+                                    <strong>PNG with Transparency</strong>
+                                    <span class="radio-description">Larger file, preserves transparent areas (for overlay effects)</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Image Display Section -->

@@ -448,36 +448,42 @@ pub fn crop_square(data: &[u8], x: u32, y: u32, size: u32) -> Result<Vec<u8>, Js
 /// * `data` - Raw image bytes (PNG, JPEG, or WebP)
 /// * `quality` - Quality level 1-100 (1=worst, 100=best). Used for JPEG only.
 ///
+/// # Parameters
+/// * `quality` - JPEG quality (1-100). For PNG, this parameter is ignored as PNG uses lossless compression.
+/// * `format` - Output format: "jpeg" or "png". If format is "jpeg", converts PNG to RGB JPEG.
+///
 /// # Returns
 /// * `Result<Vec<u8>, JsValue>` - Compressed image bytes or error
 #[wasm_bindgen]
-pub fn compress_for_download(data: &[u8], quality: u8) -> Result<Vec<u8>, JsValue> {
-    log(&format!("Preparing download with quality: {}", quality));
+pub fn compress_for_download(data: &[u8], quality: u8, format: &str) -> Result<Vec<u8>, JsValue> {
+    log(&format!("Preparing download: format={}, quality={}", format, quality));
 
     // Clamp quality to valid range
     let quality = quality.max(1).min(100);
 
     let img = bytes_to_image(data)?;
-    let input_format = detect_image_format(data);
 
-    match input_format {
-        ImageFormat::Jpeg => {
-            // For JPEG, re-encode with lower quality
+    match format.to_lowercase().as_str() {
+        "jpeg" => {
+            // Always output as JPEG (converts RGBA to RGB)
             let mut buf = Vec::new();
             let mut cursor = Cursor::new(&mut buf);
 
             use image::codecs::jpeg::JpegEncoder;
 
+            // Convert to RGB if necessary (removes transparency)
+            let rgb_img = img.to_rgb8();
+            let dynamic_img = DynamicImage::ImageRgb8(rgb_img);
+
             let mut encoder = JpegEncoder::new_with_quality(&mut cursor, quality);
-            encoder.encode_image(&img)
+            encoder.encode_image(&dynamic_img)
                 .map_err(|e| JsValue::from_str(&format!("Failed to compress image: {}", e)))?;
 
             Ok(buf)
         }
-        _ => {
-            // For PNG and other formats, keep original format to preserve transparency
-            // No additional compression applied
-            image_to_bytes(&img, input_format)
+        "png" | _ => {
+            // Output as PNG (preserves transparency)
+            image_to_bytes(&img, ImageFormat::Png)
         }
     }
 }

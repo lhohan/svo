@@ -41,6 +41,7 @@ const loadingOverlay = document.getElementById("loadingOverlay");
 const errorMessage = document.getElementById("errorMessage");
 const resetBtn = document.getElementById("resetBtn");
 const downloadBtn = document.getElementById("downloadBtn");
+const downloadOptions = document.getElementById("downloadOptions");
 
 // Crop UI
 const cropInstructions = document.getElementById("cropInstructions");
@@ -154,6 +155,7 @@ function handleFileSelect(file) {
     // Show controls and images
     controlsSection.style.display = "block";
     imagesSection.style.display = "grid";
+    downloadOptions.style.display = "block";
 
     // Wait for both images to finish loading before proceeding
     try {
@@ -412,7 +414,7 @@ async function resetImage() {
 }
 
 /**
- * Download processed image with compression
+ * Download processed image with compression based on selected quality
  */
 function downloadImage() {
   if (!currentImageData) {
@@ -420,19 +422,51 @@ function downloadImage() {
     return;
   }
 
+  // Get selected quality option
+  const selectedQuality = document.querySelector('input[name="downloadQuality"]:checked')?.value || "balanced-jpeg";
+
+  // Map quality option to WASM parameters
+  let quality, format;
+  let formatLabel, sizeEstimate;
+
+  switch (selectedQuality) {
+    case "small-jpeg":
+      quality = 70;
+      format = "jpeg";
+      formatLabel = "Small JPEG";
+      sizeEstimate = "30-40% of original";
+      break;
+    case "balanced-jpeg":
+      quality = 92;
+      format = "jpeg";
+      formatLabel = "JPEG";
+      sizeEstimate = "50-70% of original";
+      break;
+    case "high-png":
+      quality = 95; // PNG quality is ignored, but we keep this for API consistency
+      format = "png";
+      formatLabel = "PNG with Transparency";
+      sizeEstimate = "70-85% of original";
+      break;
+    default:
+      quality = 85;
+      format = "jpeg";
+      formatLabel = "Balanced JPEG";
+      sizeEstimate = "50-60% of original";
+  }
+
   // Show compression indicator
-  const downloadBtn = document.getElementById("downloadBtn");
   const originalText = downloadBtn.textContent;
   downloadBtn.textContent = "Optimizing...";
   downloadBtn.disabled = true;
 
   try {
-    // Compress image for download (quality 80 for JPEG, PNG preserves transparency)
-    const compressedData = wasmModule.compress_for_download(currentImageData, 80);
+    // Compress image for download with specified quality and format
+    const compressedData = wasmModule.compress_for_download(currentImageData, quality, format);
 
-    // Determine MIME type and extension based on output format
-    let mimeType = "image/png";
-    let extension = "png";
+    // Determine MIME type and extension
+    const mimeType = format === "jpeg" ? "image/jpeg" : "image/png";
+    const extension = format === "jpeg" ? "jpg" : "png";
 
     const blob = new Blob([compressedData], { type: mimeType });
     const url = URL.createObjectURL(blob);
@@ -449,12 +483,12 @@ function downloadImage() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    // Log compression result
+    // Log compression result with format info
     const originalSize = currentImageData.length;
     const compressedSize = compressedData.length;
     const reduction = ((1 - compressedSize / originalSize) * 100).toFixed(1);
     console.log(
-      `Download compression: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (${reduction}% reduction)`
+      `Downloaded as ${formatLabel}: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (${reduction}% reduction)`
     );
   } catch (err) {
     showError(`Download failed: ${err.message}`);
