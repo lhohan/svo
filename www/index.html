@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Image Processor - Rust WebAssembly</title>
+        <title>Add SVO logo to your image</title>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -26,11 +26,100 @@
         </noscript>
         <div class="container">
             <header>
-                <h1>🎨 Image Processor</h1>
-                <p class="subtitle">
-                    Client-side image processing powered by Rust & WebAssembly
+                <div class="badge-row" aria-label="SVO partnership">
+                    <img
+                        src="school_logo_example.png"
+                        alt="Sample school crest supporting SVO"
+                        class="badge-logo"
+                    />
+                    <span class="badge-plus" aria-hidden="true">+</span>
+                    <img
+                        src="lightning.png"
+                        alt="SVO lightning logomark"
+                        class="badge-logo"
+                    />
+                    <span class="badge-text">SVO Transparency Initiative</span>
+                </div>
+
+                <h1>Image editor: add SVO logo</h1>
+                <p class="intro-purpose">
+                    Fast, private image tools that help schools and individuals show their solidarity with the SVO initiative by layering the official split lightning mark on top of profile photos, banners, and logos in seconds.
                 </p>
+
+                <ul class="intro-highlights">
+                    <li>Private: everything runs in your browser, no uploads.</li>
+                    <li>Two overlay modes for portraits and school marks.</li>
+                    <li>Download-ready exports with or without transparency.</li>
+                </ul>
+
+                <section class="intro-steps" aria-label="How it works" role="list">
+                    <article class="intro-step-card" role="listitem">
+                        <div class="intro-step-number">1</div>
+                        <h3>Upload</h3>
+                        <p>Drop any PNG, JPEG, or WebP image to start.</p>
+                    </article>
+                    <article class="intro-step-card" role="listitem">
+                        <div class="intro-step-number">2</div>
+                        <h3>Blend</h3>
+                        <p>Choose directional splits or soft overlays to match your asset.</p>
+                    </article>
+                    <article class="intro-step-card" role="listitem">
+                        <div class="intro-step-number">3</div>
+                        <h3>Share</h3>
+                        <p>Export instantly in PNG or JPEG to post on any platform.</p>
+                    </article>
+                </section>
             </header>
+
+            <section class="example-section" aria-labelledby="exampleHeading">
+                <div class="example-heading">
+                    <p id="exampleHeading">Why this tool exists</p>
+                    <h2>Practical examples of supporting the SVO cause</h2>
+                    <p>
+                        These before-and-after previews show how students and schools can quickly apply the lightning mark while preserving their own identity and message.
+                    </p>
+                </div>
+                <div class="example-grid">
+                    <article class="example-card">
+                        <header>
+                            <p class="example-label">Profile focus</p>
+                            <h3>Transparent overlay for portraits</h3>
+                        </header>
+                        <div class="example-pair">
+                            <figure>
+                                <img src="profiel_photo-voor.jpeg" alt="Portrait before applying SVO overlay" />
+                                <figcaption>Before</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="profiel_photo-na.jpg" alt="Portrait after adding SVO lightning overlay" />
+                                <figcaption>After</figcaption>
+                            </figure>
+                        </div>
+                        <p class="example-caption">
+                            Soft transparency keeps faces visible while signaling support with the lightning inset.
+                        </p>
+                    </article>
+                    <article class="example-card">
+                        <header>
+                            <p class="example-label">School marks</p>
+                            <h3>Directional split for logos</h3>
+                        </header>
+                        <div class="example-pair">
+                            <figure>
+                                <img src="school_logo_example.png" alt="School crest before overlay" />
+                                <figcaption>Before</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="school_logo_example_2.png" alt="School crest after SVO split overlay" />
+                                <figcaption>After</figcaption>
+                            </figure>
+                        </div>
+                        <p class="example-caption">
+                            Directional splits add the lightning bar without obscuring mascots or typography.
+                        </p>
+                    </article>
+                </div>
+            </section>
 
             <main>
                 <section class="step-section" id="stepUpload" aria-label="Step 1: Upload image">
@@ -111,7 +200,7 @@
                                 <details class="control-panel cluster-logo" open>
                                     <summary>
                                         <div>
-                                            <h3 class="panel-title">Best for Logos</h3>
+                                            <h3 class="panel-title">Best for school logo</h3>
                                             <p class="panel-subtitle">Directional splits for icons and marks.</p>
                                         </div>
                                         <span class="panel-icon" aria-hidden="true"></span>
@@ -175,7 +264,7 @@
                                 <details class="control-panel cluster-selfie">
                                     <summary>
                                         <div>
-                                            <h3 class="panel-title">Best for Selfies</h3>
+                                            <h3 class="panel-title">Best for profile picture</h3>
                                             <p class="panel-subtitle">Soft transparent overlays with live opacity.</p>
                                         </div>
                                         <span class="panel-icon" aria-hidden="true"></span>
@@ -355,7 +444,7 @@
 
             <footer>
                 <p class="tech-info">
-                    Supported formats: PNG, JPEG, WebP • All processing happens
+                    Supported formats: PNG, JPEG • All processing happens
                     in your browser.
                 </p>
                 <p class="version-info" id="versionInfo"></p>
