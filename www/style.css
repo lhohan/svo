@@ -308,9 +308,25 @@ main {
     flex-wrap: wrap;
 }
 
+/* Download Section */
+.download-section {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #b1c5a4;
+}
+
+.download-button-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
 /* Download Options */
 .download-options {
-    margin-top: 2rem;
+    margin-top: 1rem;
     padding: 2rem;
     background: #f9fdf7;
     border: 1px solid #b1c5a4;
@@ -324,9 +340,10 @@ main {
 }
 
 .quality-radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
 }
 
 .radio-option {
@@ -338,6 +355,7 @@ main {
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-width: 0;
 }
 
 .radio-option:hover {
@@ -603,12 +621,25 @@ footer a:hover {
         width: 100%;
     }
 
+    .download-section {
+        padding: 1rem;
+    }
+
+    .download-button-container {
+        flex-direction: column;
+    }
+
+    .download-button-container .btn {
+        width: 100%;
+    }
+
     .download-options {
         padding: 1.5rem;
     }
 
     .quality-radio-group {
         gap: 0.75rem;
+        grid-template-columns: 1fr;
     }
 
     .radio-option {

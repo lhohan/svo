@@ -33,6 +33,7 @@ const fileInput = document.getElementById("fileInput");
 const selectFileBtn = document.getElementById("selectFileBtn");
 const controlsSection = document.getElementById("controlsSection");
 const imagesSection = document.getElementById("imagesSection");
+const downloadSection = document.getElementById("downloadSection");
 const originalCanvas = document.getElementById("originalCanvas");
 const processedCanvas = document.getElementById("processedCanvas");
 const originalInfo = document.getElementById("originalInfo");
@@ -155,6 +156,7 @@ function handleFileSelect(file) {
     // Show controls and images
     controlsSection.style.display = "block";
     imagesSection.style.display = "grid";
+    downloadSection.style.display = "block";
     downloadOptions.style.display = "block";
 
     // Wait for both images to finish loading before proceeding
