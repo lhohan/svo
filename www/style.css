@@ -74,9 +74,10 @@ header h1 {
     object-fit: contain;
 }
 
-.badge-plus {
+.badge-separator {
     font-weight: 700;
     color: #0f2f25;
+    font-size: 1.5rem;
 }
 
 .badge-text {
@@ -893,6 +894,10 @@ footer a:hover {
 
     .badge-logo {
         height: 40px;
+    }
+
+    .badge-separator {
+        font-size: 1.25rem;
     }
 
     .upload-area {
