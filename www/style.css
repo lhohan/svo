@@ -171,6 +171,7 @@ header h1 {
 .example-heading h2 {
     font-size: 2rem;
     margin: 0.5rem 0 0.75rem;
+    text-wrap: balance;
 }
 
 .example-grid {
