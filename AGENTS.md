@@ -68,6 +68,13 @@ pub fn my_filter(data: &[u8]) -> Result<Vec<u8>, JsValue> {
 
 **Adding a new filter to UI:**
 1. Add button in `index.html` with `data-filter="filter_name"`
+
+**Internationalization guidelines:**
+1. All static UI strings live in `www/translations/en.json` and `www/translations/nl.json`; add keys there instead of hardcoding text.
+2. Mark DOM nodes with `data-i18n="key"` (and optional `data-i18n-attr` for attributes) so `i18n.js` can swap content automatically.
+3. `www/i18n.js` handles detection order (`localStorage` → browser language → default EN), caching, and the EN/NL buttons; reuse its `t()` helper for any new JS-surfaced messages.
+4. The language selector uses `.lang-btn[data-lang]`; keep this pattern so `setupLanguageControls()` can bind events without extra wiring.
+
 2. Add case in `applyFilter()` switch statement
 3. Handle parameters if needed (like sliders)
 

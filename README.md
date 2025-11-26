@@ -21,6 +21,11 @@ This tool helps schools and individuals show solidarity with "smartphone free" e
 - **High Quality Output** - Maintains original image resolution
 - **One-Click Download** - Export as PNG with transparency preserved
 
+### Multilingual UI (EN/NL)
+- **Auto Detection** – First load picks Dutch if your browser’s preferred languages (via `navigator.languages`) include `nl*`; otherwise English is used.
+- **Manual Override** – Header shows EN/NL buttons; clicking one instantly updates all text and sets the active style.
+- **Persistent Choice** – The selected language is stored in `localStorage` (`svo-lang`), so it overrides detection on subsequent visits until cleared.
+
 ## Background or why I made this
 
 My reasons for creating this project are several:
