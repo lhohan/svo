@@ -205,6 +205,10 @@ header h1 {
     box-shadow: var(--shadow-lg);
 }
 
+.example-card header {
+    padding: 1rem 1rem;
+}
+
 .example-label {
     font-size: 0.85rem;
     text-transform: uppercase;
