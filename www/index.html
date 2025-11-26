@@ -5,6 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Smartphone Free Badge Maker</title>
         <link rel="stylesheet" href="style.css" />
+        <link
+            rel="preload"
+            href="assets/examples/profile_before@2x.webp"
+            as="image"
+        />
+        <link
+            rel="preload"
+            href="assets/examples/profile_after@2x.webp"
+            as="image"
+        />
     </head>
     <body>
         <noscript>
@@ -146,6 +156,8 @@
                                     <img
                                         src="assets/examples/profile_before@2x.jpg"
                                         alt="Portrait before applying SVO overlay"
+                                        fetchpriority="high"
+                                        loading="eager"
                                     />
                                 </picture>
                                 <figcaption>Before</figcaption>
@@ -159,6 +171,8 @@
                                     <img
                                         src="assets/examples/profile_after@2x.jpg"
                                         alt="Portrait after adding SVO lightning overlay"
+                                        fetchpriority="high"
+                                        loading="eager"
                                     />
                                 </picture>
                                 <figcaption>After</figcaption>
@@ -557,25 +571,26 @@
                     </div>
                 </section>
 
-                <!-- Loading Spinner -->
-                <div
-                    class="loading-overlay"
-                    id="loadingOverlay"
-                    role="status"
-                    aria-live="polite"
-                >
-                    <div class="spinner" aria-hidden="true"></div>
-                    <p>Processing image...</p>
-                </div>
-
-                <!-- Error Message -->
-                <div
-                    class="error-message"
-                    id="errorMessage"
-                    role="alert"
-                    aria-live="assertive"
-                ></div>
             </main>
+
+            <!-- Loading Spinner -->
+            <div
+                class="loading-overlay"
+                id="loadingOverlay"
+                role="status"
+                aria-live="polite"
+            >
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Processing image...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div
+                class="error-message"
+                id="errorMessage"
+                role="alert"
+                aria-live="assertive"
+            ></div>
 
             <footer>
                 <p class="tech-info">
