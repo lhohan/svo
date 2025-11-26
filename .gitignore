@@ -37,3 +37,6 @@ Thumbs.db
 
 # Claude Code
 **/*.local.json
+
+# Factory Droid
+.factory/docs
