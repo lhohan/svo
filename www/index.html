@@ -90,80 +90,90 @@
                     <h2>Image Processing Operations</h2>
 
                     <div class="controls-grid">
-                        <!-- Horizontal Filters -->
-                        <div class="control-group">
-                            <h3>Horizontal</h3>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="combine_filter_bottom"
-                            >
-                                Split ↓
-                                <span class="recommended-badge"
-                                    >Recommended</span
-                                >
-                            </button>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="combine_filter_top"
-                            >
-                                Split ↑
-                            </button>
+                        <div class="control-cluster cluster-logo">
+                            <h3 class="cluster-title">Best for Logos</h3>
+                            <div class="cluster-grid cluster-grid-logo">
+                                <!-- Horizontal Filters -->
+                                <div class="control-group">
+                                    <h3>Horizontal</h3>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="combine_filter_bottom"
+                                    >
+                                        Split ↓
+                                        <span class="recommended-badge"
+                                            >Recommended</span
+                                        >
+                                    </button>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="combine_filter_top"
+                                    >
+                                        Split ↑
+                                    </button>
+                                </div>
+
+                                <!-- Vertical Filters -->
+                                <div class="control-group">
+                                    <h3>Vertical</h3>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="combine_filter_left"
+                                    >
+                                        Split ←
+                                    </button>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="combine_filter_right"
+                                    >
+                                        Split →
+                                    </button>
+                                </div>
+
+                                <!-- Diagonal Filters -->
+                                <div class="control-group">
+                                    <h3>Diagonal</h3>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="combine_diagonal_tl_br"
+                                    >
+                                        Split ↘
+                                    </button>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="combine_diagonal_tr_bl"
+                                    >
+                                        Split ↙
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Vertical Filters -->
-                        <div class="control-group">
-                            <h3>Vertical</h3>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="combine_filter_left"
-                            >
-                                Split ←
-                            </button>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="combine_filter_right"
-                            >
-                                Split →
-                            </button>
-                        </div>
-
-                        <!-- Diagonal Filters -->
-                        <div class="control-group">
-                            <h3>Diagonal</h3>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="combine_diagonal_tl_br"
-                            >
-                                Split ↘
-                            </button>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="combine_diagonal_tr_bl"
-                            >
-                                Split ↙
-                            </button>
-                        </div>
-
-                        <!-- Overlay Effects -->
-                        <div class="control-group">
-                            <h3>Overlay Effects</h3>
-                            <button
-                                class="btn btn-filter"
-                                data-filter="overlay_transparent"
-                            >
-                                Transparent Overlay
-                            </button>
-                            <div class="slider-container">
-                                <label for="opacitySlider">Opacity: <span id="opacityValue">30</span>%</label>
-                                <input
-                                    type="range"
-                                    id="opacitySlider"
-                                    min="0"
-                                    max="100"
-                                    value="30"
-                                    class="slider"
-                                    aria-label="Adjust overlay opacity from 0 to 100 percent"
-                                />
+                        <div class="control-cluster cluster-selfie">
+                            <h3 class="cluster-title">Best for Selfies</h3>
+                            <div class="cluster-grid cluster-grid-selfie">
+                                <!-- Overlay Effects -->
+                                <div class="control-group">
+                                    <h3>Overlay Effects</h3>
+                                    <button
+                                        class="btn btn-filter"
+                                        data-filter="overlay_transparent"
+                                    >
+                                        Transparent Overlay
+                                    </button>
+                                    <div class="slider-container">
+                                        <label for="opacitySlider">Opacity: <span id="opacityValue">30</span>%</label>
+                                        <input
+                                            type="range"
+                                            id="opacitySlider"
+                                            min="0"
+                                            max="100"
+                                            value="30"
+                                            class="slider"
+                                            aria-label="Adjust overlay opacity from 0 to 100 percent"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
